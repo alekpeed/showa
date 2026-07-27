@@ -1,0 +1,46 @@
+.album {
+  position: absolute;
+  border-radius: 1cqw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform var(--t-calm) var(--ease),
+    filter var(--t-calm) var(--ease);
+}
+
+.album:hover {
+  /* A subtle page-lift: the book rises and catches a little more lamp light. */
+  transform: translateY(-0.3cqw) rotate(-0.25deg);
+  filter: brightness(1.16);
+}
+
+.album:active {
+  transform: translateY(-0.05cqw);
+  transition-duration: 100ms;
+}
+
+.album:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* The label is always rendered, not hover-only -- the spec forbids hover-only
+   information. It simply brightens on hover. */
+/* Sits over the middle of the open book rather than floating above it, where it
+   used to collide with the queue recess. */
+.hint {
+  padding: 0.35cqw 1.4cqw;
+  border-radius: 999px;
+  color: var(--brass-bright);
+  background: rgba(12, 8, 5, 0.72);
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+  opacity: 0.78;
+  box-shadow: inset 0 0 0 0.06cqw rgba(201, 160, 78, 0.5);
+  transition: opacity var(--t-quick) var(--ease);
+}
+
+.album:hover .hint,
+.album:focus-visible .hint {
+  opacity: 1;
+}

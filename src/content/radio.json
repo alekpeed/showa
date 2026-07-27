@@ -1,0 +1,7 @@
+{
+  "id": "j1-gold",
+  "name": "J1 GOLD",
+  "streamUrl": "REPLACE_WITH_VERIFIED_J1_GOLD_STREAM_URL",
+  "enabled": true,
+  "initialVolume": 0.55
+}

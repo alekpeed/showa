@@ -1,0 +1,23 @@
+[package]
+name = "showa-video-cabinet"
+version = "0.1.0"
+description = "A private Showa-era entertainment cabinet"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "showa_video_cabinet_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["macos-private-api"] }
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

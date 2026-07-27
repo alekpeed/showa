@@ -1,0 +1,59 @@
+.notice {
+  position: absolute;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7cqw;
+  padding: 0.9cqw 1.2cqw;
+  border-radius: 0.5cqw;
+  background: linear-gradient(180deg, rgba(38, 22, 10, 0.96) 0%, rgba(22, 13, 6, 0.97) 100%);
+  box-shadow:
+    inset 0 0 0 0.08cqw rgba(201, 160, 78, 0.55),
+    0 0.6cqw 1.8cqw rgba(0, 0, 0, 0.7);
+  animation: rise var(--t-calm) var(--ease);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(0.5cqw); }
+  to { opacity: 1; transform: none; }
+}
+
+.message {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6cqw;
+}
+
+.retry,
+.close {
+  padding: 0.4cqw 1.2cqw;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+  transition: filter var(--t-quick) var(--ease);
+}
+
+.retry {
+  color: #2b1d0e;
+  background: linear-gradient(168deg, var(--brass-bright) 0%, var(--brass) 100%);
+}
+
+.close {
+  color: var(--ink-dim);
+  box-shadow: inset 0 0 0 0.06cqw rgba(201, 160, 78, 0.45);
+}
+
+.retry:hover,
+.close:hover {
+  filter: brightness(1.15);
+}
+
+.retry:focus-visible,
+.close:focus-visible {
+  box-shadow: var(--focus-ring);
+}

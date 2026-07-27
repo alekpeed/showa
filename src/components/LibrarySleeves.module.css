@@ -1,0 +1,69 @@
+.sleeve {
+  position: absolute;
+  border-radius: 6px;
+  transition:
+    transform var(--t-quick) var(--ease),
+    filter var(--t-quick) var(--ease);
+}
+
+.sleeve:hover {
+  /* The 2-4px rise the spec asks for, expressed against the design canvas so it
+     stays proportional when the scene scales. */
+  transform: translateY(-0.22cqw);
+  filter: brightness(1.14);
+}
+
+.sleeve:active {
+  transform: translateY(0.08cqw);
+  filter: brightness(1.02);
+  transition-duration: 90ms;
+}
+
+.sleeve[data-selected] {
+  transform: translate(0.35cqw, -0.28cqw);
+  filter: brightness(1.2) saturate(1.05);
+}
+
+.sleeve:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* Brass edge along the sleeve's outer lip when selected. */
+.rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-calm) var(--ease);
+  box-shadow:
+    inset 0 0 0 0.12cqw var(--brass),
+    inset 0 0.1cqw 0.5cqw rgba(255, 214, 150, 0.35),
+    0 0.15cqw 0.9cqw rgba(201, 160, 78, 0.45);
+}
+
+.sleeve[data-selected] .rim {
+  opacity: 1;
+}
+
+/* Small indicator lamp, so selection is legible without colour perception. */
+.lamp {
+  position: absolute;
+  right: 0.5cqw;
+  bottom: 0.5cqw;
+  width: 0.55cqw;
+  height: 0.55cqw;
+  border-radius: 50%;
+  background: #4a3a1e;
+  pointer-events: none;
+  transition:
+    background var(--t-calm) var(--ease),
+    box-shadow var(--t-calm) var(--ease);
+}
+
+.sleeve[data-selected] .lamp {
+  background: var(--brass-bright);
+  box-shadow:
+    0 0 0.35cqw var(--brass-bright),
+    0 0 0.9cqw rgba(240, 209, 144, 0.75);
+}

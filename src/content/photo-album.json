@@ -1,0 +1,93 @@
+[
+  {
+    "id": "page-001",
+    "pageNumber": 1,
+    "layout": "collage",
+    "titleJa": "日本の思い出",
+    "titleEn": "Memories of Japan",
+    "noteJa": "九州旅行にて　2023年",
+    "noteEn": "From our trip through Kyushu, 2023",
+    "photos": [
+      {
+        "id": "photo-001",
+        "src": "/assets/photos/kyushu/placeholder-01.webp",
+        "captionJa": "長崎の港",
+        "captionEn": "Nagasaki harbour",
+        "locationJa": "長崎県",
+        "year": 2023,
+        "rotationDegrees": -1.5
+      },
+      {
+        "id": "photo-002",
+        "src": "/assets/photos/kyushu/placeholder-02.webp",
+        "captionJa": "熊本城",
+        "captionEn": "Kumamoto Castle",
+        "locationJa": "熊本県",
+        "year": 2023,
+        "rotationDegrees": 1.2
+      },
+      {
+        "id": "photo-003",
+        "src": "/assets/photos/kyushu/placeholder-03.webp",
+        "captionJa": "朝の海",
+        "captionEn": "The sea in the morning",
+        "locationJa": "大分県",
+        "year": 2023,
+        "rotationDegrees": -0.8
+      }
+    ]
+  },
+  {
+    "id": "page-002",
+    "pageNumber": 2,
+    "layout": "collage",
+    "titleJa": "ふるさとの風景",
+    "titleEn": "Scenes from Home",
+    "noteJa": "阿蘇のあたり",
+    "noteEn": "Around Aso",
+    "photos": [
+      {
+        "id": "photo-004",
+        "src": "/assets/photos/kyushu/placeholder-04.webp",
+        "captionJa": "阿蘇の山",
+        "captionEn": "Mount Aso",
+        "locationJa": "熊本県",
+        "year": 2023,
+        "rotationDegrees": 1.8
+      },
+      {
+        "id": "photo-005",
+        "src": "/assets/photos/kyushu/placeholder-05.webp",
+        "captionJa": "田んぼの道",
+        "captionEn": "A path through the rice fields",
+        "year": 2023,
+        "rotationDegrees": -1.1
+      }
+    ]
+  },
+  {
+    "id": "page-003",
+    "pageNumber": 3,
+    "layout": "double",
+    "titleJa": "町のようす",
+    "titleEn": "Around Town",
+    "photos": [
+      {
+        "id": "photo-006",
+        "src": "/assets/photos/other-japan/placeholder-06.webp",
+        "captionJa": "夕方の商店街",
+        "captionEn": "The shopping street at dusk",
+        "year": 2023,
+        "rotationDegrees": 0.9
+      },
+      {
+        "id": "photo-007",
+        "src": "/assets/photos/other-japan/placeholder-07.webp",
+        "captionJa": "駅のホーム",
+        "captionEn": "The station platform",
+        "year": 2023,
+        "rotationDegrees": -1.4
+      }
+    ]
+  }
+]

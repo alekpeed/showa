@@ -1,0 +1,57 @@
+[
+  {
+    "id": "personal-nagasaki-evening",
+    "library": "personal-videos",
+    "source": "bunny",
+    "titleJa": "長崎の夕方",
+    "titleEn": "Evening in Nagasaki",
+    "locationJa": "長崎県",
+    "year": 2023,
+    "bunnyLibraryId": "REPLACE_WITH_LIBRARY_ID",
+    "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
+    "thumbnail": "/assets/thumbnails/personal/personal-nagasaki-evening.webp",
+    "sortOrder": 10,
+    "enabled": true
+  },
+  {
+    "id": "personal-kumamoto-castle",
+    "library": "personal-videos",
+    "source": "bunny",
+    "titleJa": "熊本城",
+    "titleEn": "Kumamoto Castle",
+    "locationJa": "熊本県",
+    "year": 2023,
+    "bunnyLibraryId": "REPLACE_WITH_LIBRARY_ID",
+    "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
+    "thumbnail": "/assets/thumbnails/personal/personal-kumamoto-castle.webp",
+    "sortOrder": 20,
+    "enabled": true
+  },
+  {
+    "id": "personal-beppu-onsen",
+    "library": "personal-videos",
+    "source": "bunny",
+    "titleJa": "別府の温泉",
+    "titleEn": "Beppu Hot Springs",
+    "locationJa": "大分県",
+    "year": 2023,
+    "bunnyLibraryId": "REPLACE_WITH_LIBRARY_ID",
+    "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
+    "thumbnail": "/assets/thumbnails/personal/personal-beppu-onsen.webp",
+    "sortOrder": 30,
+    "enabled": true
+  },
+  {
+    "id": "personal-family-lunch",
+    "library": "personal-videos",
+    "source": "bunny",
+    "titleJa": "みんなでお昼ごはん",
+    "titleEn": "Lunch Together",
+    "year": 2023,
+    "bunnyLibraryId": "REPLACE_WITH_LIBRARY_ID",
+    "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
+    "thumbnail": "/assets/thumbnails/personal/personal-family-lunch.webp",
+    "sortOrder": 40,
+    "enabled": true
+  }
+]

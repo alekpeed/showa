@@ -1,0 +1,135 @@
+/* The tuner window. Dark and inert when off; warm and lit when receiving. */
+.display {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1cqw;
+  padding: 0 3cqw 0 1.2cqw;
+  border-radius: 0.3cqw;
+  pointer-events: none;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(10, 7, 4, 0.9) 0%, rgba(6, 4, 3, 0.94) 100%);
+  color: rgba(201, 160, 78, 0.35);
+  transition:
+    background var(--t-calm) var(--ease),
+    color var(--t-calm) var(--ease),
+    box-shadow var(--t-calm) var(--ease);
+}
+
+.display[data-on] {
+  background: linear-gradient(180deg, rgba(58, 36, 12, 0.92) 0%, rgba(30, 18, 6, 0.95) 100%);
+  color: var(--brass-bright);
+  box-shadow:
+    inset 0 0 1.6cqw rgba(240, 209, 144, 0.28),
+    0 0 1.4cqw rgba(240, 209, 144, 0.2);
+}
+
+.station {
+  letter-spacing: 0.2em;
+  /* The trailing letter-space pushes the text visually left; the indent cancels it. */
+  text-indent: 0.2em;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.15;
+}
+
+.status {
+  opacity: 0.85;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.equalizer {
+  position: absolute;
+  right: 1cqw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: flex-end;
+  gap: 0.16cqw;
+  height: 1.1cqw;
+}
+
+.equalizer i {
+  width: 0.16cqw;
+  background: var(--brass-bright);
+  border-radius: 999px;
+  animation: bounce 1.1s var(--ease) infinite;
+}
+
+.equalizer i:nth-child(1) { height: 40%; animation-delay: 0ms; }
+.equalizer i:nth-child(2) { height: 75%; animation-delay: 140ms; }
+.equalizer i:nth-child(3) { height: 55%; animation-delay: 280ms; }
+.equalizer i:nth-child(4) { height: 90%; animation-delay: 420ms; }
+
+@keyframes bounce {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.55; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Reduce Motion: keep the bars, drop the movement. The lit display already
+   communicates "on", so nothing is lost. */
+@media (prefers-reduced-motion: reduce) {
+  .equalizer i {
+    animation: none;
+    transform: scaleY(0.7);
+  }
+}
+
+.lamp {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: #3a1410;
+  transition:
+    background var(--t-calm) var(--ease),
+    box-shadow var(--t-calm) var(--ease);
+}
+
+.lamp[data-on] {
+  background: #ff7a4a;
+  box-shadow:
+    0 0 0.5cqw #ff7a4a,
+    0 0 1.4cqw rgba(255, 122, 74, 0.7);
+}
+
+.power {
+  position: absolute;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: filter var(--t-quick) var(--ease);
+}
+
+.power:hover {
+  filter: brightness(1.2);
+}
+
+.power:active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+
+.power:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* A brass ring that lights around the painted input selector when the radio runs. */
+.powerRing {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 0.1cqw var(--brass-bright),
+    0 0 1cqw rgba(240, 209, 144, 0.6);
+  transition: opacity var(--t-calm) var(--ease);
+}
+
+.power[aria-pressed="true"] .powerRing {
+  opacity: 1;
+}

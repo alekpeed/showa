@@ -1,0 +1,60 @@
+[
+  {
+    "id": "nostalgic-kyushu-countryside",
+    "library": "nostalgic-japan",
+    "source": "youtube",
+    "titleJa": "九州の田園風景",
+    "titleEn": "Kyushu Countryside",
+    "subtitleJa": "昭和の記録映像",
+    "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
+    "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-kyushu-countryside.webp",
+    "sortOrder": 10,
+    "enabled": true
+  },
+  {
+    "id": "nostalgic-nagasaki-streets",
+    "library": "nostalgic-japan",
+    "source": "youtube",
+    "titleJa": "長崎の街並み",
+    "titleEn": "Streets of Nagasaki",
+    "locationJa": "長崎県",
+    "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
+    "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-nagasaki-streets.webp",
+    "sortOrder": 20,
+    "enabled": true
+  },
+  {
+    "id": "nostalgic-showa-shotengai",
+    "library": "nostalgic-japan",
+    "source": "youtube",
+    "titleJa": "昭和の商店街",
+    "titleEn": "A Showa Shopping Street",
+    "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
+    "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-showa-shotengai.webp",
+    "sortOrder": 30,
+    "enabled": true
+  },
+  {
+    "id": "nostalgic-aso-mountains",
+    "library": "nostalgic-japan",
+    "source": "youtube",
+    "titleJa": "阿蘇の山なみ",
+    "titleEn": "The Aso Mountains",
+    "locationJa": "熊本県",
+    "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
+    "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-aso-mountains.webp",
+    "sortOrder": 40,
+    "enabled": true
+  },
+  {
+    "id": "nostalgic-steam-railway",
+    "library": "nostalgic-japan",
+    "source": "youtube",
+    "titleJa": "汽車の旅",
+    "titleEn": "Travelling by Steam Train",
+    "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
+    "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-steam-railway.webp",
+    "sortOrder": 50,
+    "enabled": true
+  }
+]

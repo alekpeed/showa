@@ -1,0 +1,90 @@
+/*
+ * Global reset and the shared material vocabulary of the cabinet: warm brass,
+ * lacquered wood, lamp light. Component styles build on these variables so the
+ * scene stays one object rather than a set of unrelated widgets.
+ */
+
+:root {
+  --brass: #c9a04e;
+  --brass-bright: #f0d190;
+  --brass-dim: #8a6f36;
+  --lamp: #f6e3bc;
+  --ink: #f4ead6;
+  --ink-dim: #c9b998;
+  --wood-deep: #241005;
+  --shadow: rgba(0, 0, 0, 0.6);
+
+  /* Every transition in the app uses these; nothing is faster or bouncier. */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-quick: 180ms;
+  --t-calm: 300ms;
+
+  --focus-ring: 0 0 0 3px rgba(10, 8, 5, 0.9), 0 0 0 6px var(--brass-bright);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0b0806;
+  color: var(--ink);
+  font-family:
+    "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+  overflow: hidden;
+  /* The scene is the interface; stray text selection breaks the illusion. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-radius: 4px;
+}
+
+/* macOS "Reduce Motion" is honoured globally rather than per-component. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

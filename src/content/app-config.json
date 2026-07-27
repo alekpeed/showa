@@ -1,0 +1,11 @@
+{
+  "appNameJa": "昭和ビデオ・キャビネット",
+  "appNameEn": "Showa Video Cabinet",
+  "defaultLibrary": "showa-songs",
+  "autoplayNext": true,
+  "pauseRadioWhenVideoStarts": true,
+  "pauseVideoWhenRadioStarts": true,
+  "homeStopsPlayback": false,
+  "showEnglishSubtitles": true,
+  "enableFullScreenOnLaunch": false
+}

@@ -1,0 +1,172 @@
+.screen {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 1.1cqw;
+  background: radial-gradient(ellipse at 50% 44%, #14120f 0%, #0a0908 62%, #050404 100%);
+  display: grid;
+  place-items: center;
+}
+
+/* The player lives here. Nothing may escape this box. */
+.mount {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 1.1cqw;
+}
+
+.mount :global(iframe) {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* CRT glass: a faint vertical sheen and corner falloff. Purely decorative, and
+   explicitly not interactive so it can never swallow a click. */
+.glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 1.1cqw;
+  background:
+    linear-gradient(102deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0) 38%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.42) 100%);
+  box-shadow: inset 0 0 2.2cqw rgba(0, 0, 0, 0.55);
+}
+
+.hitArea {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hitArea:focus-visible {
+  box-shadow: inset 0 0 0 0.25cqw var(--brass-bright);
+  border-radius: 1.1cqw;
+}
+
+/* Idle / radio card shown when no video is loaded. */
+.card {
+  position: relative;
+  text-align: center;
+  /* Kept tight so the app's own name fits on one line inside the screen. */
+  padding: 0 1.6cqw;
+  color: var(--ink-dim);
+}
+
+.cardKicker {
+  margin: 0 0 0.5cqw;
+  letter-spacing: 0.4em;
+  color: var(--brass);
+}
+
+.cardTitle {
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 2cqw rgba(246, 227, 188, 0.18);
+}
+
+.cardNote {
+  margin: 1cqw 0 0;
+  color: var(--ink-dim);
+  opacity: 0.82;
+}
+
+.loading {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  color: var(--ink-dim);
+}
+
+.loadingDot {
+  width: 0.7cqw;
+  height: 0.7cqw;
+  border-radius: 50%;
+  background: var(--brass);
+  animation: pulse 1.4s var(--ease) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Title and progress. Fades once the pointer settles during playback. */
+.chrome {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-calm) var(--ease);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chrome[data-visible] {
+  opacity: 1;
+}
+
+.titleBar {
+  padding: 1.4cqw 1.8cqw 3cqw;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.titleJa {
+  margin: 0;
+  color: var(--ink);
+  text-shadow: 0 0.1cqw 0.4cqw rgba(0, 0, 0, 0.9);
+}
+
+.titleSub {
+  margin: 0.25cqw 0 0;
+  color: var(--ink-dim);
+}
+
+.titleEn {
+  margin: 0.2cqw 0 0;
+  color: var(--ink-dim);
+  opacity: 0.62;
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.progressBar {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  padding: 3cqw 1.8cqw 1.3cqw;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.time {
+  color: var(--ink-dim);
+  flex: none;
+}
+
+.track {
+  flex: 1;
+  height: 0.28cqw;
+  min-height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--brass-bright);
+  transition: width 300ms linear;
+}

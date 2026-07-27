@@ -1,0 +1,216 @@
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4cqw;
+  /* The scene dims but stays visible, so closing returns somewhere familiar. */
+  background: rgba(8, 5, 3, 0.78);
+  backdrop-filter: blur(2px);
+  animation: fadeIn var(--t-calm) var(--ease);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.book {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 1cqw;
+  width: 86%;
+  /* A fixed height, not a max: the spread sizes its photos to fill it, so the
+     close button below always has room and the book never overruns the frame. */
+  height: 72%;
+  min-height: 0;
+}
+
+.spread {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+  border-radius: 0.5cqw;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0) 12%),
+    #e8dcc0;
+  box-shadow:
+    0 1.4cqw 4cqw rgba(0, 0, 0, 0.7),
+    inset 0 0 3cqw rgba(120, 90, 50, 0.28);
+  animation: turn var(--t-calm) var(--ease);
+}
+
+@keyframes turn {
+  from { opacity: 0.35; transform: translateY(0.5cqw); }
+  to { opacity: 1; transform: none; }
+}
+
+.page {
+  flex: 1;
+  min-width: 0;
+  padding: 2cqw 2.2cqw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2cqw;
+  color: #3b2a17;
+  /* Aged paper: a faint warm wash rather than a busy texture image. */
+  background: radial-gradient(ellipse at 50% 0%, #f2e8d0 0%, #e3d5b6 100%);
+}
+
+.spine {
+  width: 1.4cqw;
+  flex: none;
+  background: linear-gradient(
+    90deg,
+    rgba(90, 66, 36, 0.05) 0%,
+    rgba(70, 50, 26, 0.42) 45%,
+    rgba(70, 50, 26, 0.42) 55%,
+    rgba(90, 66, 36, 0.05) 100%
+  );
+}
+
+.pageHeader {
+  flex: none;
+  text-align: center;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 2.1cqw;
+  letter-spacing: 0.12em;
+  color: #2f2011;
+}
+
+.pageNote {
+  margin: 0.4cqw 0 0;
+  font-size: 1.35cqw;
+  color: #6b5334;
+}
+
+.photos {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  gap: 1.1cqw;
+  grid-template-columns: repeat(2, 1fr);
+  /* Rows size to their photos and the block centres on the sheet. Stretching
+     rows to fill instead would turn a two-photo page into two very tall crops. */
+  grid-auto-rows: auto;
+  align-content: center;
+  overflow: hidden;
+}
+
+.page[data-layout="single"] .photos {
+  grid-template-columns: 1fr;
+}
+
+/* An odd photo out spans the full width instead of leaving a gap. */
+.page[data-layout="collage"] .photo:nth-child(3):last-child {
+  grid-column: span 2;
+}
+
+.photo {
+  margin: 0;
+  padding: 0.55cqw 0.55cqw 0.4cqw;
+  background: #fbf6ea;
+  box-shadow: 0 0.35cqw 1.1cqw rgba(60, 40, 20, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4cqw;
+  min-height: 0;
+}
+
+/* A fixed print proportion, sized by column width. Real photographs of any
+   orientation are cropped into it, which is what a pasted-in album does. */
+.photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: #cdbb99;
+}
+
+/* The odd photo out spans both columns, so it gets a landscape crop instead of
+   an enormous 4:3 one. */
+.page[data-layout="collage"] .photo:nth-child(3):last-child img {
+  aspect-ratio: 16 / 9;
+}
+
+.caption {
+  flex: none;
+  font-size: 1.25cqw;
+  color: #5a4429;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.turn {
+  flex: none;
+  width: 5cqw;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  font-size: 4cqw;
+  line-height: 1;
+  color: var(--brass-bright);
+  border-radius: 0.6cqw;
+  background: rgba(0, 0, 0, 0.28);
+  transition:
+    background var(--t-quick) var(--ease),
+    opacity var(--t-quick) var(--ease);
+}
+
+.turn:hover:not(:disabled) {
+  background: rgba(240, 209, 144, 0.16);
+}
+
+.turn:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.turn:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.close {
+  flex: none;
+  padding: 0.8cqw 3cqw;
+  font-size: 1.7cqw;
+  letter-spacing: 0.2em;
+  color: #2b1d0e;
+  border-radius: 999px;
+  background: linear-gradient(168deg, var(--brass-bright) 0%, var(--brass) 100%);
+  box-shadow:
+    0 0.35cqw 1cqw rgba(0, 0, 0, 0.55),
+    inset 0 0.08cqw 0.1cqw rgba(255, 255, 255, 0.5);
+  transition: filter var(--t-quick) var(--ease), transform var(--t-quick) var(--ease);
+}
+
+.close:hover {
+  filter: brightness(1.1);
+}
+
+.close:active {
+  transform: translateY(0.1cqw);
+}
+
+.close:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.empty {
+  color: var(--ink-dim);
+  font-size: 1.8cqw;
+}

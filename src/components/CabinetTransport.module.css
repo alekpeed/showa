@@ -1,0 +1,54 @@
+/* Brass plaques inlaid into the drawer front. They read as hardware belonging to
+   the cabinet rather than as software buttons pasted over it. */
+.plaque {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18cqw;
+  border-radius: 0.5cqw;
+  color: var(--brass-bright);
+  background: linear-gradient(168deg, rgba(122, 96, 48, 0.9) 0%, rgba(74, 56, 26, 0.92) 100%);
+  box-shadow:
+    inset 0 0.08cqw 0.1cqw rgba(255, 226, 168, 0.4),
+    inset 0 -0.08cqw 0.12cqw rgba(0, 0, 0, 0.55),
+    0 0.12cqw 0.4cqw rgba(0, 0, 0, 0.6);
+  transition:
+    transform var(--t-quick) var(--ease),
+    filter var(--t-quick) var(--ease),
+    box-shadow var(--t-quick) var(--ease);
+}
+
+.plaque:hover {
+  filter: brightness(1.22);
+  transform: translateY(-0.12cqw);
+}
+
+.plaque:active {
+  /* Brief tactile depression: the plaque sinks and loses its top highlight. */
+  transform: translateY(0.1cqw);
+  filter: brightness(0.95);
+  box-shadow:
+    inset 0 0.12cqw 0.3cqw rgba(0, 0, 0, 0.6),
+    0 0.04cqw 0.15cqw rgba(0, 0, 0, 0.5);
+  transition-duration: 80ms;
+}
+
+.plaque:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.glyph {
+  font-size: 1.3cqw;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0.06cqw 0.12cqw rgba(0, 0, 0, 0.7);
+}
+
+.label {
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0.06cqw 0.12cqw rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}

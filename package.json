@@ -1,0 +1,40 @@
+{
+  "name": "showa-video-cabinet",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run validate:content && tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "validate:content": "tsx scripts/validate-content.ts",
+    "import:csv": "tsx scripts/import-csv.ts",
+    "clean:background": "node scripts/clean-background.mjs",
+    "lint": "eslint . --ext ts,tsx",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
+    "tauri": "tauri",
+    "generate:placeholders": "node scripts/generate-placeholders.mjs",
+    "generate:icon": "node scripts/generate-icon.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "playwright": "^1.62.0",
+    "prettier": "^3.9.6",
+    "sharp": "^0.35.3",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-store": "^2.4.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
+  }
+}

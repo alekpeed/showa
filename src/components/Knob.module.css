@@ -1,0 +1,43 @@
+.knob {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  cursor: ns-resize;
+  touch-action: none;
+  /* Transparent: the brass cap is painted into the background artwork. This is
+     the oversized hit area sitting on top of it. */
+  background: transparent;
+  transition: box-shadow var(--t-quick) var(--ease);
+}
+
+.knob:hover {
+  box-shadow: 0 0 1.2cqw rgba(240, 209, 144, 0.28);
+}
+
+.knob:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* A thin brass index line laid over the painted knob to show the setting. */
+.pointer {
+  position: absolute;
+  width: 0.13cqw;
+  height: 26%;
+  top: 22%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--brass-bright), rgba(240, 209, 144, 0.25));
+  transform-origin: 50% 108%;
+  box-shadow: 0 0 0.4cqw rgba(240, 209, 144, 0.8);
+  transition: transform var(--t-quick) var(--ease);
+  pointer-events: none;
+}
+
+.readout {
+  position: absolute;
+  bottom: -1.4cqw;
+  color: var(--brass);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
