@@ -110,15 +110,21 @@ export class YouTubeAdapter implements MediaPlayerAdapter {
     this.player = new api.Player(host, {
       videoId: this.item.youtubeVideoId,
       playerVars: {
-        // No related-video grid, no branding, no keyboard surprises: the cabinet
-        // controls are the interface, not YouTube's chrome.
         autoplay: 0,
-        controls: 0,
-        disablekb: 1,
-        modestbranding: 1,
+        // YouTube's controls are on, and are the only controls over the video.
+        // With them off its pause screen still appeared -- controls=0 removes the
+        // control bar, not the overlay -- so the choice was never "our chrome or
+        // theirs", it was "theirs, or theirs with ours on top of it". Theirs at
+        // least lets her drag through a song, which nothing we drew could do.
+        controls: 1,
+        // Left enabled so that once the player has focus, space and the arrow
+        // keys keep doing something sensible instead of going dead.
+        disablekb: 0,
         rel: 0,
         iv_load_policy: 3,
         playsinline: 1,
+        // Full screen stays off: there is no way back out of it that she would
+        // find, and the cabinet is the point.
         fs: 0,
         origin: window.location.origin,
       },

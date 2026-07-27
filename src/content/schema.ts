@@ -165,6 +165,12 @@ export const appConfigSchema = z.object({
   pauseRadioWhenVideoStarts: z.boolean(),
   pauseVideoWhenRadioStarts: z.boolean(),
   homeStopsPlayback: z.boolean(),
+  /**
+   * Nothing reads this any more. It drove the English line on the television's
+   * title overlay, and that overlay is gone -- YouTube's player draws its own
+   * title and a second one on top of it was the problem. Kept so existing
+   * configs keep validating; delete it here and in app-config.json together.
+   */
   showEnglishSubtitles: z.boolean(),
   enableFullScreenOnLaunch: z.boolean(),
 });
