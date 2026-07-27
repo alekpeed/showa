@@ -100,23 +100,26 @@ export const HOTSPOTS: Hotspot[] = [
     ariaLabelEn: "Open the photo album",
   },
   {
-    // The amplifier's input selector. Its painted labels read PHONO / TUNER / AUX,
-    // so "switch to the tuner" is the honest physical meaning of turning on radio.
+    // The large brass knob sitting directly beside the lit station display. This
+    // was the amplifier's input selector, on the reasoning that "switch to the
+    // tuner" is the honest physical meaning of turning on a radio -- but nobody
+    // finds a small knob two rows up when there is a big one next to the words
+    // J1 GOLD. It is the switch because it is the thing that looks like the switch.
     id: "radio-power",
     action: "radio-toggle",
-    x: 1480,
-    y: 478,
+    x: 1497,
+    y: 576,
     width: 82,
     height: 82,
     ariaLabelJa: "ラジオ",
     ariaLabelEn: "Radio power",
   },
   {
-    // Large brass knob on the tuner. Hit box is deliberately wider than the knob.
+    // The input selector on the amplifier's knob row, at its right end.
     id: "radio-volume",
     action: "radio-volume",
-    x: 1497,
-    y: 576,
+    x: 1480,
+    y: 478,
     width: 82,
     height: 82,
     ariaLabelJa: "ラジオの音量",
@@ -181,55 +184,13 @@ export const HOTSPOTS: Hotspot[] = [
   },
 ];
 
-/**
- * The four brass buttons rendered across the drawer front. Sizes are chosen so
- * that each stays above the 52x52 CSS pixel minimum at a 1200x750 window.
+/*
+ * Four brass plaques -- 前へ / 再生 / 次へ / ホーム -- used to be laid across the
+ * drawer front here. They were removed: every one duplicated something already
+ * within reach (the television toggles playback, the queue is one click from any
+ * video, the next one follows on its own), and they were invented objects on a
+ * drawer the artwork paints with no buttons on it.
+ *
+ * TRANSPORT_DRAWER is kept above -- it is the drawer's own geometry, and
+ * scripts/clean-background.mjs still refers to that region.
  */
-export interface TransportButtonSpec {
-  id: string;
-  action: HotspotAction;
-  labelJa: string;
-  labelEn: string;
-  rect: DesignRect;
-}
-
-const TRANSPORT_BUTTON_WIDTH = 80;
-const TRANSPORT_BUTTON_GAP = 8;
-
-const transportRect = (index: number): DesignRect => ({
-  x: TRANSPORT_DRAWER.x + index * (TRANSPORT_BUTTON_WIDTH + TRANSPORT_BUTTON_GAP),
-  y: TRANSPORT_DRAWER.y,
-  width: TRANSPORT_BUTTON_WIDTH,
-  height: TRANSPORT_DRAWER.height,
-});
-
-export const TRANSPORT_BUTTONS: TransportButtonSpec[] = [
-  {
-    id: "transport-previous",
-    action: "video-previous",
-    labelJa: "前へ",
-    labelEn: "Previous",
-    rect: transportRect(0),
-  },
-  {
-    id: "transport-toggle",
-    action: "video-toggle",
-    labelJa: "再生",
-    labelEn: "Play",
-    rect: transportRect(1),
-  },
-  {
-    id: "transport-next",
-    action: "video-next",
-    labelJa: "次へ",
-    labelEn: "Next",
-    rect: transportRect(2),
-  },
-  {
-    id: "transport-home",
-    action: "home",
-    labelJa: "ホーム",
-    labelEn: "Home",
-    rect: transportRect(3),
-  },
-];

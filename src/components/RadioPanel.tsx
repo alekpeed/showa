@@ -1,10 +1,10 @@
 /**
- * The tuner: station display, power (the amplifier's input selector), volume knob
- * and power lamp.
+ * The tuner: station display, power, volume knob and power lamp.
  *
- * The input selector is used as the power control because its painted labels read
- * PHONO / TUNER / AUX -- "switch the amplifier to the tuner" is the physically
- * honest meaning of turning the radio on, and it needs no new object in the scene.
+ * Power is the large brass knob beside the station display -- one click on, one
+ * click off. It used to be the amplifier's input selector, which was defensible
+ * on paper (its painted labels read PHONO / TUNER / AUX) and useless in practice:
+ * the control that looks like the radio's switch has to be the radio's switch.
  */
 import { CONTENT } from "../content/loadContent";
 import { fontSize, place } from "../scene/designSystem";

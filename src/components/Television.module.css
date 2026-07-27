@@ -35,6 +35,18 @@
   box-shadow: inset 0 0 2.2cqw rgba(0, 0, 0, 0.55);
 }
 
+/* Covers the iframe whenever the video is not running, so YouTube's pause screen
+   never reaches her. Deliberately the same warm dark as the screen's resting
+   state, so pausing looks like the television settling rather than like content
+   being taken away. */
+.veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 1.1cqw;
+  background: radial-gradient(ellipse at 50% 44%, #14120f 0%, #0a0908 62%, #050404 100%);
+}
+
 .hitArea {
   position: absolute;
   inset: 0;
@@ -115,6 +127,28 @@
 
 .chrome[data-visible] {
   opacity: 1;
+}
+
+/* The paused play mark: a brass triangle in a thin ring, centred on the screen.
+   Sized in cqw so it holds its proportion as the cabinet scales. */
+.playBadge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 7.2cqw;
+  height: 7.2cqw;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.12cqw rgba(240, 209, 144, 0.55);
+  background: rgba(24, 18, 11, 0.55);
+  color: var(--brass-bright);
+  /* Optically centred: a triangle's visual mass sits left of its bounding box. */
+  text-indent: 0.5cqw;
+  font-size: 2.6cqw;
+  line-height: 1;
+  text-shadow: 0 0 1.2cqw rgba(240, 209, 144, 0.45);
 }
 
 .titleBar {

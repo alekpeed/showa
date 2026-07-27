@@ -117,7 +117,7 @@
   box-shadow: var(--focus-ring);
 }
 
-/* A brass ring that lights around the painted input selector when the radio runs. */
+/* A brass ring that lights around the painted knob when the radio runs. */
 .powerRing {
   position: absolute;
   inset: 18%;

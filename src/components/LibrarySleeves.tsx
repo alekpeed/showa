@@ -2,9 +2,10 @@
  * The three media sleeves on the left of the cabinet.
  *
  * Each sleeve is a single large button covering the whole painted object. The
- * selected state is signalled three ways at once -- a brass edge, an indicator
- * lamp, and a small forward shift -- because the spec forbids relying on colour
- * alone, and because a lit brass rim reads at laptop distance where a border does not.
+ * selected state is signalled three ways at once -- a forward shift, a
+ * brightness lift, and an indicator lamp -- because the spec forbids relying on
+ * colour alone. None of the three depends on the hit box matching the painted
+ * edge, which is why there is no outline.
  */
 import { LIBRARY_LABELS, type LibraryId } from "../content/schema";
 import { place } from "../scene/designSystem";
@@ -40,7 +41,6 @@ export function LibrarySleeves() {
             aria-label={`${LIBRARY_LABELS[library].ja}（${LIBRARY_LABELS[library].en}）`}
             onClick={() => selectLibrary(library)}
           >
-            <span className={styles.rim} aria-hidden="true" />
             <span className={styles.lamp} aria-hidden="true" />
           </button>
         );

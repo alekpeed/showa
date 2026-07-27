@@ -28,23 +28,11 @@
   box-shadow: var(--focus-ring);
 }
 
-/* Brass edge along the sleeve's outer lip when selected. */
-.rim {
-  position: absolute;
-  inset: 0;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--t-calm) var(--ease);
-  box-shadow:
-    inset 0 0 0 0.12cqw var(--brass),
-    inset 0 0.1cqw 0.5cqw rgba(255, 214, 150, 0.35),
-    0 0.15cqw 0.9cqw rgba(201, 160, 78, 0.45);
-}
-
-.sleeve[data-selected] .rim {
-  opacity: 1;
-}
+/* There was a brass rim here, drawn on the sleeve's hit rectangle. The painted
+   sleeves are not rectangles and do not sit flush inside their hit boxes, so it
+   never lined up -- it read as a stray outline floating near the sleeve rather
+   than as light on its edge. Selection is carried by the forward shift, the
+   brightness lift and the lamp instead, which need no geometry to be right. */
 
 /* Small indicator lamp, so selection is legible without colour perception. */
 .lamp {

@@ -60,6 +60,20 @@ export function Television() {
     <div className={styles.screen} style={place(TELEVISION_SCREEN)} onPointerMove={wakeChrome}>
       <div ref={mountRef} className={styles.mount} aria-hidden={idle} />
 
+      {/* Whenever the video is not actually running, YouTube paints its own
+          screen inside the iframe: a title bar, a large play button, a scrubber,
+          a related-video thumbnail and its logo. None of that can be switched
+          off with player parameters -- controls=0 removes the controls, not this
+          -- and it lands on top of the artwork looking like a browser was left
+          open. So the paused state is covered outright and the cabinet draws its
+          own, matching the screen's resting state.
+
+          Opaque rather than translucent on purpose: at any alpha that lets the
+          paused frame show through, YouTube's white play button shows through
+          with it, and two play buttons is worse than none. Rendered before the
+          loading indicator so that indicator stays on top. */}
+      {item && !isPlaying && <div className={styles.veil} aria-hidden="true" />}
+
       {idle && radioStatus !== "off" && (
         <div className={styles.card}>
           <p className={styles.cardKicker} style={{ fontSize: fontSize(22) }}>
@@ -107,6 +121,15 @@ export function Television() {
 
       {item && (
         <div className={styles.chrome} data-visible={chromeVisible || !isPlaying || undefined}>
+          {/* The cabinet's own play mark, standing in for the one that used to
+              come from YouTube. Hidden while loading so it never sits next to
+              the 読み込み中 indicator saying two different things. */}
+          {!isPlaying && !isLoading && (
+            <span className={styles.playBadge} aria-hidden="true">
+              ▶
+            </span>
+          )}
+
           <div className={styles.titleBar}>
             <p className={styles.titleJa} style={{ fontSize: fontSize(30) }}>
               {item.titleJa}

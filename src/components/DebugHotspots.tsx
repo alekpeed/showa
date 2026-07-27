@@ -13,7 +13,6 @@ import {
   QUEUE_CARD_LANE,
   QUEUE_PANEL,
   TELEVISION_SCREEN,
-  TRANSPORT_BUTTONS,
   TUNER_DISPLAY,
 } from "../scene/hotspots";
 import styles from "./DebugHotspots.module.css";
@@ -45,11 +44,6 @@ export function DebugHotspots() {
       {HOTSPOTS.map((hotspot) => (
         <div key={hotspot.id} className={styles.box} style={place(hotspot)}>
           <span className={styles.tag}>{hotspot.id}</span>
-        </div>
-      ))}
-      {TRANSPORT_BUTTONS.map((button) => (
-        <div key={button.id} className={styles.box} style={place(button.rect)}>
-          <span className={styles.tag}>{button.id}</span>
         </div>
       ))}
       {EXTRA.map((entry) => (

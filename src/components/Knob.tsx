@@ -1,5 +1,12 @@
 /**
- * A cabinet knob: drag vertically, scroll, or use arrow keys.
+ * A cabinet knob: click where you want it pointing, drag to refine, or use the
+ * scroll wheel and arrow keys.
+ *
+ * A single click sets the value, because "click, hold and move" is not a gesture
+ * to hand to a ninety-year-old -- on a first attempt it looks like the knob is
+ * broken. The angle under the pointer becomes the setting, which is how a real
+ * dial behaves: you turn it to where you want it. Dragging then continues from
+ * there for anyone who wants finer adjustment.
  *
  * The visible brass cap is small because the artwork's knobs are small, but the
  * hit box is the full hotspot rectangle -- the spec's "large hit targets, even if
@@ -22,35 +29,68 @@ export interface KnobProps {
 }
 
 const STEP = 0.05;
-const DRAG_RANGE_PX = 160;
+
+/**
+ * Inside this fraction of the knob's radius the angle is noise -- a click a few
+ * pixels off dead centre would swing the value wildly. Clicks landing there are
+ * ignored rather than obeyed.
+ */
+const DEAD_ZONE = 0.22;
 
 export function Knob({ value, onChange, labelJa, sweep = 270, style, showValue }: KnobProps) {
-  const dragRef = useRef<{ startY: number; startValue: number } | null>(null);
+  const draggingRef = useRef(false);
 
   const clamp = (n: number) => Math.min(1, Math.max(0, n));
+
+  /**
+   * Maps a pointer position to a value using the angle from the knob's centre,
+   * measured clockwise from straight up -- the same convention the brass index
+   * line is drawn with, so the line lands under the pointer.
+   *
+   * Returns null inside the dead zone, and for angles in the gap at the bottom
+   * of the sweep, where there is no honest reading to give.
+   */
+  const valueAt = useCallback(
+    (element: HTMLElement, clientX: number, clientY: number): number | null => {
+      const rect = element.getBoundingClientRect();
+      const dx = clientX - (rect.left + rect.width / 2);
+      const dy = clientY - (rect.top + rect.height / 2);
+
+      const radius = Math.min(rect.width, rect.height) / 2;
+      if (Math.hypot(dx, dy) < radius * DEAD_ZONE) return null;
+
+      const degrees = (Math.atan2(dx, -dy) * 180) / Math.PI;
+      const half = sweep / 2;
+      // Below the sweep's ends the knob simply does not travel; snapping there
+      // would let a click under the knob jump the volume from silent to full.
+      if (degrees < -half || degrees > half) return null;
+
+      return clamp((degrees + half) / sweep);
+    },
+    [sweep],
+  );
 
   const onPointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
       event.currentTarget.setPointerCapture(event.pointerId);
-      dragRef.current = { startY: event.clientY, startValue: value };
+      draggingRef.current = true;
+      const next = valueAt(event.currentTarget, event.clientX, event.clientY);
+      if (next !== null) onChange(next);
     },
-    [value],
+    [onChange, valueAt],
   );
 
   const onPointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      const drag = dragRef.current;
-      if (!drag) return;
-      // Upward drag increases, which is the direction a physical knob's near
-      // edge travels when you turn it clockwise.
-      const delta = (drag.startY - event.clientY) / DRAG_RANGE_PX;
-      onChange(clamp(drag.startValue + delta));
+      if (!draggingRef.current) return;
+      const next = valueAt(event.currentTarget, event.clientX, event.clientY);
+      if (next !== null) onChange(next);
     },
-    [onChange],
+    [onChange, valueAt],
   );
 
   const endDrag = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    dragRef.current = null;
+    draggingRef.current = false;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }

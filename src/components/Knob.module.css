@@ -3,7 +3,9 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  cursor: ns-resize;
+  /* A plain pointer, not ns-resize: a single click sets the knob, so nothing
+     here should suggest that dragging is required. */
+  cursor: pointer;
   touch-action: none;
   /* Transparent: the brass cap is painted into the background artwork. This is
      the oversized hit area sitting on top of it. */
