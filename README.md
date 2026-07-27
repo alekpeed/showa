@@ -33,8 +33,13 @@ npm run tauri dev    # the real desktop app
 
 `.github/workflows/pages.yml` publishes the scene to GitHub Pages on every push,
 so it can be opened in any browser on any machine at
-`https://<user>.github.io/showa/`. The workflow enables Pages itself on first
-run — there is nothing to switch on by hand.
+`https://<user>.github.io/showa/`.
+
+Pages has to be switched on once, by hand, before the first deploy can succeed:
+**Settings → Pages → Build and deployment → Source: GitHub Actions.** The
+workflow cannot do it for itself — the built-in `GITHUB_TOKEN` has no admin
+scope. Until it is on, the workflow fails at `configure-pages` with *"Get Pages
+site failed"*. After switching it on, re-run the workflow from the Actions tab.
 
 The scene, all three sleeves, video playback, the photo album, the queue, the
 keyboard shortcuts and the radio all work there. The daily news reading and the

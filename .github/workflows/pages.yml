@@ -4,7 +4,10 @@ name: Web preview
 # machine, without Node or a clone. This is a preview of the interface and the
 # content -- not the shipped app.
 #
-# The workflow enables Pages itself on first run; no manual setup needed.
+# One-time setup, by hand: repository Settings -> Pages -> Build and deployment
+# -> Source: GitHub Actions. The workflow cannot do this for you -- the built-in
+# GITHUB_TOKEN has no admin scope, so `enablement: true` fails with "Resource not
+# accessible by integration".
 #
 # What works in the browser: the whole scene, all three sleeves, video playback,
 # the photo album, the queue, the keyboard shortcuts, and the radio.
@@ -51,12 +54,9 @@ jobs:
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
 
-      # enablement turns Pages on for the repository if it is not already,
-      # rather than failing with "Get Pages site failed" and requiring someone
-      # to find the setting by hand.
+      # If this step fails with "Get Pages site failed", Pages has not been
+      # switched on yet -- see the note at the top of this file.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
