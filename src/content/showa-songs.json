@@ -147,5 +147,31 @@
     "thumbnail": "/assets/thumbnails/showa/showa-kobayashi-horeta-onna.webp",
     "sortOrder": 60,
     "enabled": true
+  },
+  {
+    "id": "showa-tokuhisa-kita-e-kaerou",
+    "library": "showa-songs",
+    "source": "youtube",
+    "titleJa": "北へ帰ろう",
+    "artistJa": "徳久広司",
+    "artistEn": "Koji Tokuhisa",
+    "subtitleJa": "TBS「寺内貫太郎一家2」挿入歌",
+    "year": 1975,
+    "youtubeVideoId": "nMMArCa-WI4",
+    "thumbnail": "/assets/thumbnails/showa/showa-tokuhisa-kita-e-kaerou.webp",
+    "sortOrder": 70,
+    "enabled": true
+  },
+  {
+    "id": "showa-funamura-fusetsu",
+    "library": "showa-songs",
+    "source": "youtube",
+    "titleJa": "風雪流れ旅",
+    "artistJa": "船村徹",
+    "artistEn": "Toru Funamura",
+    "youtubeVideoId": "LeR9i3cpt8o",
+    "thumbnail": "/assets/thumbnails/showa/showa-funamura-fusetsu.webp",
+    "sortOrder": 80,
+    "enabled": true
   }
 ]
