@@ -167,6 +167,14 @@ Built, never once connected. Everything below is unverified.
 - **Memory quality is unproven.** The closing summary is written by a text model
   from the call transcript. It could retain something trivial, or miss the thing
   that mattered. Read the notes in the settings panel for the first week.
+- **Input transcription config is a guess.** OpenAI's Realtime conversation guide
+  does not document how to enable transcription of the user's own audio, so
+  `session.audio.input.transcription = { model }` is the documented-pattern shape
+  rather than a verified one. If it is wrong, her half of the call is never
+  transcribed. That failure is guarded: a note is only written when at least one
+  line of the transcript is hers, so a broken config produces *no* memory rather
+  than confident notes about a conversation she never had. Symptom to watch for:
+  "What it remembers" stays empty after real calls.
 - **Cost is per minute, not per day.** Unlike the news, a long conversation is
   a real spend. If the key hits its cap mid-call everything stops, including the
   news the next morning. Consider a separate key, or a cap sized for talking.

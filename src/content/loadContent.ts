@@ -154,6 +154,7 @@ export function loadContent(): LoadedContent {
           model: "gpt-realtime-2.1",
           voice: "marin",
           eagerness: "low" as const,
+          transcriptionModel: "gpt-realtime-whisper",
           memoryEnabled: false,
           memoryModel: "gpt-5.6",
           maxMemoryNotes: 40,

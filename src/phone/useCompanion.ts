@@ -118,9 +118,18 @@ export function useCompanion(): CompanionState {
 
   /** Summarises the call into a couple of lines for the next one to build on. */
   const writeClosingNote = useCallback(async () => {
-    const transcript = transcriptRef.current.join("\n").trim();
+    const lines = transcriptRef.current;
     transcriptRef.current = [];
-    if (!config.memoryEnabled || transcript.length < 80) return;
+    if (!config.memoryEnabled) return;
+
+    // A note is only worth writing if she is actually in the transcript. If
+    // input transcription is misconfigured the far end's half still arrives,
+    // and summarising that alone would produce confident notes about a
+    // conversation she never had.
+    if (!lines.some((line) => line.startsWith("本人:"))) return;
+
+    const transcript = lines.join("\n").trim();
+    if (transcript.length < 80) return;
 
     const key = useSettings.getState().openAiApiKey.trim();
     if (!key) return;
@@ -242,6 +251,10 @@ export function useCompanion(): CompanionState {
               output: { voice: config.voice },
               input: {
                 turn_detection: { type: "semantic_vad", eagerness: config.eagerness },
+                // Without this her side of the call is never transcribed, and
+                // the closing note would be written from the far end's half of
+                // the conversation alone.
+                transcription: { model: config.transcriptionModel },
               },
             },
           },

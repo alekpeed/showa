@@ -8,5 +8,6 @@
   "maxMemoryNotes": 40,
   "labelJa": "おしゃべり",
   "silenceNudgeSeconds": 25,
-  "silenceHangupSeconds": 180
+  "silenceHangupSeconds": 180,
+  "transcriptionModel": "gpt-realtime-whisper"
 }

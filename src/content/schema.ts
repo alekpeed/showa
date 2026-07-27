@@ -130,6 +130,11 @@ export const companionConfigSchema = z.object({
    * before the model decides she has finished, which matters at 90.
    */
   eagerness: z.enum(["low", "medium", "high", "auto"]),
+  /**
+   * Transcribes her side of the call so the closing note has both halves.
+   * Without it the transcript is one-sided and no note is written at all.
+   */
+  transcriptionModel: z.string().min(1),
   /** Rolling notes between calls, so a conversation can be picked back up. */
   memoryEnabled: z.boolean(),
   memoryModel: z.string().min(1),
