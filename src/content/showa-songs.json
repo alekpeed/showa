@@ -122,5 +122,30 @@
     "thumbnail": "/assets/thumbnails/showa/showa-darkducks-yukiyama.webp",
     "sortOrder": 40,
     "enabled": true
+  },
+  {
+    "id": "showa-kobayashi-sekibetsu",
+    "library": "showa-songs",
+    "source": "youtube",
+    "titleJa": "惜別の歌",
+    "artistJa": "小林旭",
+    "artistEn": "Akira Kobayashi",
+    "youtubeVideoId": "Cw0Gpv_kgWY",
+    "thumbnail": "/assets/thumbnails/showa/showa-kobayashi-sekibetsu.webp",
+    "sortOrder": 50,
+    "enabled": true
+  },
+  {
+    "id": "showa-kobayashi-horeta-onna",
+    "library": "showa-songs",
+    "source": "youtube",
+    "titleJa": "惚れた女が死んだ夜は",
+    "artistJa": "小林旭",
+    "artistEn": "Akira Kobayashi",
+    "year": 1997,
+    "youtubeVideoId": "spwQerW4q1k",
+    "thumbnail": "/assets/thumbnails/showa/showa-kobayashi-horeta-onna.webp",
+    "sortOrder": 60,
+    "enabled": true
   }
 ]
