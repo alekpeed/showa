@@ -113,6 +113,32 @@ By hand instead:
 > **Never put a Bunny API key in this project.** Playback uses public embed URLs
 > only. The management API key must stay out of the app bundle.
 
+## Import a list of links at once
+
+The lowest-friction path. Put the links in a text file, one per line:
+
+```text
+https://www.youtube.com/watch?v=XXXXXXXXXXX
+https://youtu.be/YYYYYYYYYYY | 川の流れのように | 美空ひばり | 1989
+```
+
+Everything after the URL is optional. Then:
+
+```bash
+npm run import:urls -- --library showa-songs links.txt
+npm run fetch:thumbnails
+npm run validate:content
+```
+
+For each link it extracts the id, **checks the video is actually embeddable**,
+and pulls the real title — the three things most easily got wrong by hand. A
+video whose owner disabled embedding is reported and skipped rather than
+written, since it would otherwise look configured and then refuse to play.
+
+Fetched titles are a starting point; YouTube titles are often noisy, so replace
+`titleJa` with something she would recognise. Re-running matches on video id and
+leaves existing entries alone.
+
 ## Import a whole spreadsheet at once
 
 Export a sheet with the columns from `06-asset-manifest.md` section E, then:

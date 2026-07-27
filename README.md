@@ -127,6 +127,7 @@ about each unfilled entry but does not fail.
 | Command                        | What it does                                              |
 | ------------------------------ | --------------------------------------------------------- |
 | `npm run validate:content`     | schema, duplicate ids, missing asset files                 |
+| `npm run import:urls -- f.txt` | a list of YouTube links → a library manifest                |
 | `npm run import:csv -- f.csv`  | spreadsheet → the three video manifests                    |
 | `npm run import:bunny`         | read a Bunny library → personal-videos.json                |
 | `npm run clean:background`     | regenerate the scene background from the reference art     |

@@ -18,7 +18,8 @@
     "release:manifest": "node scripts/release-manifest.mjs",
     "check:links": "node scripts/check-links.mjs",
     "fetch:thumbnails": "node scripts/fetch-thumbnails.mjs",
-    "import:bunny": "node scripts/import-bunny.mjs"
+    "import:bunny": "node scripts/import-bunny.mjs",
+    "import:urls": "node scripts/import-urls.mjs"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.11.4",
