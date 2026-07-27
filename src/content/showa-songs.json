@@ -25,8 +25,8 @@
     "year": 1989,
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/showa/showa-misora-kawa.webp",
-    "sortOrder": 20,
-    "enabled": true
+    "sortOrder": 1020,
+    "enabled": false
   },
   {
     "id": "showa-teresa-toki",
@@ -39,8 +39,8 @@
     "year": 1986,
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/showa/showa-teresa-toki.webp",
-    "sortOrder": 30,
-    "enabled": true
+    "sortOrder": 1030,
+    "enabled": false
   },
   {
     "id": "showa-mori-oyoge",
@@ -53,8 +53,8 @@
     "year": 1974,
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/showa/showa-mori-erimo.webp",
-    "sortOrder": 40,
-    "enabled": true
+    "sortOrder": 1040,
+    "enabled": false
   },
   {
     "id": "showa-ishikawa-tsugaru",
@@ -67,8 +67,8 @@
     "year": 1977,
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/showa/showa-ishikawa-tsugaru.webp",
-    "sortOrder": 50,
-    "enabled": true
+    "sortOrder": 1050,
+    "enabled": false
   },
   {
     "id": "showa-sakamoto-ueomuite",
@@ -81,7 +81,21 @@
     "year": 1961,
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/showa/showa-sakamoto-ueomuite.webp",
-    "sortOrder": 60,
+    "sortOrder": 1060,
+    "enabled": false
+  },
+  {
+    "id": "showa-hosokawa-bokyo-jongara",
+    "library": "showa-songs",
+    "source": "youtube",
+    "titleJa": "望郷じょんがら",
+    "titleEn": "Bokyo Jongara",
+    "artistJa": "細川たかし",
+    "artistEn": "Takashi Hosokawa",
+    "year": 1985,
+    "youtubeVideoId": "iuiZ24ltcx8",
+    "thumbnail": "/assets/thumbnails/showa/showa-hosokawa-bokyo-jongara.webp",
+    "sortOrder": 20,
     "enabled": true
   }
 ]

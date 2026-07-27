@@ -11,7 +11,7 @@
     "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
     "thumbnail": "/assets/thumbnails/personal/personal-nagasaki-evening.webp",
     "sortOrder": 10,
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "personal-kumamoto-castle",
@@ -25,7 +25,7 @@
     "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
     "thumbnail": "/assets/thumbnails/personal/personal-kumamoto-castle.webp",
     "sortOrder": 20,
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "personal-beppu-onsen",
@@ -39,7 +39,7 @@
     "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
     "thumbnail": "/assets/thumbnails/personal/personal-beppu-onsen.webp",
     "sortOrder": 30,
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "personal-family-lunch",
@@ -52,6 +52,6 @@
     "bunnyVideoId": "REPLACE_WITH_VIDEO_GUID",
     "thumbnail": "/assets/thumbnails/personal/personal-family-lunch.webp",
     "sortOrder": 40,
-    "enabled": true
+    "enabled": false
   }
 ]

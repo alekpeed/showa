@@ -9,7 +9,7 @@
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-kyushu-countryside.webp",
     "sortOrder": 10,
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "nostalgic-nagasaki-streets",
@@ -21,7 +21,7 @@
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-nagasaki-streets.webp",
     "sortOrder": 20,
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "nostalgic-showa-shotengai",
@@ -32,7 +32,7 @@
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-showa-shotengai.webp",
     "sortOrder": 30,
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "nostalgic-aso-mountains",
@@ -44,7 +44,7 @@
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-aso-mountains.webp",
     "sortOrder": 40,
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "nostalgic-steam-railway",
@@ -55,6 +55,6 @@
     "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
     "thumbnail": "/assets/thumbnails/nostalgic/nostalgic-steam-railway.webp",
     "sortOrder": 50,
-    "enabled": true
+    "enabled": false
   }
 ]
