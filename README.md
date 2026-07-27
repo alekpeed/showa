@@ -69,6 +69,9 @@ src/
   news/                 the daily gentle-news reading
     newsService.ts      web search -> spoken Japanese -> audio
     newsCache.ts        IndexedDB, so the app needs no filesystem access
+  phone/                the conversation phone (Realtime API over WebRTC)
+    companionPrompt.ts  an interlocutor, not an assistant
+    companionMemory.ts  short notes carried between calls
   content/              JSON manifests + Zod schemas
   state/store.ts        app state and the audio-focus rules
 public/assets/          thumbnails and photographs (referenced by JSON path)
@@ -81,9 +84,9 @@ scripts/                content and asset tooling
 1. **No absolute coordinate lives outside `hotspots.ts`.** If an overlay drifts
    off its painted object, that file and `scripts/clean-background.mjs` are the
    only two places to change.
-2. **Exactly one audible source at a time.** Video, radio and the news reading
-   each take audio focus from the other two, and opening the album pauses all
-   three. This is enforced in `src/state/store.ts`, not in the components.
+2. **Exactly one audible source at a time.** Video, radio, the news reading and
+   the phone each take audio focus from the others, and opening the album pauses
+   all of them. Enforced in `src/state/store.ts`, not in the components.
 
 ### Keyboard
 
@@ -132,12 +135,19 @@ Network traffic, in full:
 - Video embeds and the radio stream — only after she chooses to play something.
 - **If the daily news reading is configured:** two requests to the OpenAI API at
   app startup to build that day's clip. Nothing about her is sent — the request
-  asks for public news and nothing else. Leave the API key unset and none of
-  this happens.
+  asks for public news and nothing else.
+- **If the conversation phone is used:** her speech goes to the OpenAI Realtime
+  API for the duration of a call, and a short summary of each call is stored
+  locally and sent back at the start of the next one. Readable and deletable in
+  the settings panel.
 
-The app is granted outbound HTTP to exactly three pinned hosts
-(`src-tauri/capabilities/default.json`) and has no filesystem, shell, camera,
-microphone, location or notification access at all.
+Leave the API key unset and neither of those happens at all.
+
+The app is granted outbound HTTP to three pinned hosts
+(`src-tauri/capabilities/default.json`) and the microphone, which is used only
+while a call is open — the tracks are stopped on hang-up so the macOS recording
+indicator goes out. No filesystem, shell, camera, location or notification
+access at all.
 
 ## Known limitations
 

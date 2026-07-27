@@ -120,6 +120,24 @@ export const newsConfigSchema = z.object({
 });
 export type NewsConfig = z.infer<typeof newsConfigSchema>;
 
+export const companionConfigSchema = z.object({
+  enabled: z.boolean(),
+  /** Must be a Realtime speech-to-speech model. */
+  model: z.string().min(1),
+  voice: z.string().min(1),
+  /**
+   * Semantic VAD eagerness. "low" gives her the most room to pause mid-sentence
+   * before the model decides she has finished, which matters at 90.
+   */
+  eagerness: z.enum(["low", "medium", "high", "auto"]),
+  /** Rolling notes between calls, so a conversation can be picked back up. */
+  memoryEnabled: z.boolean(),
+  memoryModel: z.string().min(1),
+  maxMemoryNotes: z.number().int().min(1).max(200),
+  labelJa: z.string().min(1),
+});
+export type CompanionConfig = z.infer<typeof companionConfigSchema>;
+
 export const appConfigSchema = z.object({
   appNameJa: z.string().min(1),
   appNameEn: z.string().min(1),

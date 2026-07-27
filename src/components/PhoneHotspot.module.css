@@ -1,0 +1,83 @@
+.phone {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.8cqw;
+  transition:
+    transform var(--t-calm) var(--ease),
+    filter var(--t-calm) var(--ease);
+}
+
+.phone:hover {
+  transform: translateY(-0.3cqw);
+  filter: brightness(1.18);
+}
+
+.phone:active {
+  transform: translateY(-0.05cqw);
+  transition-duration: 100ms;
+}
+
+.phone:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* Placeholder plate. Once the artwork has a real handset painted on the table,
+   this can lose its background and become a label like the album's. */
+.plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2cqw;
+  padding: 0.7cqw 1.8cqw;
+  border-radius: 0.7cqw;
+  background: linear-gradient(168deg, rgba(38, 26, 14, 0.92) 0%, rgba(20, 13, 7, 0.94) 100%);
+  box-shadow:
+    inset 0 0 0 0.07cqw rgba(201, 160, 78, 0.55),
+    0 0.3cqw 1cqw rgba(0, 0, 0, 0.6);
+  transition:
+    box-shadow var(--t-calm) var(--ease),
+    background var(--t-calm) var(--ease);
+}
+
+.phone[data-live] .plate {
+  background: linear-gradient(168deg, rgba(70, 46, 18, 0.95) 0%, rgba(40, 25, 10, 0.96) 100%);
+  box-shadow:
+    inset 0 0 0 0.09cqw var(--brass-bright),
+    0 0 1.6cqw rgba(240, 209, 144, 0.45);
+}
+
+.glyph {
+  font-size: 1.7cqw;
+  line-height: 1;
+  color: var(--brass);
+  transition: color var(--t-calm) var(--ease);
+}
+
+.phone[data-connected] .glyph {
+  color: var(--brass-bright);
+  /* A slow, quiet pulse while the line is open -- the only motion on the table.
+     Reduce Motion strips it globally. */
+  animation: breathe 2.6s var(--ease) infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.label {
+  color: var(--ink);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.phone[data-live] .label {
+  color: var(--brass-bright);
+}

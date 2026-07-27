@@ -139,7 +139,47 @@ Built, but the least proven part of the app.
   key straight out of `localStorage`. The real control is the spend cap on the
   key, which is why the docs insist on it.
 
-## What the news feature changed about the app's posture
+## The conversation phone
+
+Built, never once connected. Everything below is unverified.
+
+- **No call has ever been placed.** The WebRTC flow follows OpenAI's current
+  published guide — ephemeral client secret, SDP offer to `/v1/realtime/calls`,
+  semantic VAD over the data channel — but no key has been used, so the request
+  shapes, the event names used to collect the transcript, and the model id
+  (`gpt-realtime-2.1`) are all unconfirmed.
+- **The microphone cannot be tested from here.** `getUserMedia`, the Hardened
+  Runtime entitlement and the `NSMicrophoneUsageDescription` string are all
+  configured but unexercised. If the entitlement is wrong the app still notarizes
+  cleanly and the phone silently fails — a nasty combination.
+- **Accept the mic permission during setup.** The first pick-up triggers a macOS
+  dialog. She should never meet it.
+- **Turn-taking is the thing most likely to be wrong.** Semantic VAD at `low`
+  eagerness is the right starting point for someone who pauses mid-sentence, but
+  whether it actually gives a 90-year-old enough room is an empirical question.
+  Have a long, slow conversation with it before handing it over. If it cuts her
+  off, that single setting is the dial.
+- **The voice is unheard.** `marin` was taken from a documentation example. Try
+  several on real Japanese.
+- **Register is unproven.** The instructions ask for natural spoken Japanese and
+  forbid assistant phrasing, but whether the result sounds like a person or like
+  a translated help desk needs a native ear.
+- **Memory quality is unproven.** The closing summary is written by a text model
+  from the call transcript. It could retain something trivial, or miss the thing
+  that mattered. Read the notes in the settings panel for the first week.
+- **Cost is per minute, not per day.** Unlike the news, a long conversation is
+  a real spend. If the key hits its cap mid-call everything stops, including the
+  news the next morning. Consider a separate key, or a cap sized for talking.
+- **The handset position is a placeholder.** There is no telephone in the
+  approved artwork, so the object renders its own plate on the bare table
+  between the album and the magazines. It needs a scene render with a real
+  handset; when that arrives, the rectangle in `hotspots.ts` is the only change.
+- **No reconnection.** If the connection drops mid-call the phone returns to
+  its resting state and she has to pick it up again. There is no automatic
+  retry, deliberately — a phone that redials itself would be stranger than one
+  that hangs up.
+
+## What the news feature and the phone changed about the app's posture
 
 Worth being explicit, because V1 deliberately had none of this:
 
@@ -147,5 +187,13 @@ Worth being explicit, because V1 deliberately had none of this:
   chooses to play something.
 - It now has **outbound HTTP permission**, scoped to three pinned hosts in
   `src-tauri/capabilities/default.json`.
+- It now has **microphone access**, used only while a call is open. Tracks are
+  stopped on hang-up so the macOS recording indicator goes out; if that ever
+  stays lit after she puts the handset down, that is a bug worth chasing
+  immediately.
+- **Her speech leaves the machine** during a call, and a summary of each call is
+  retained locally. Both are visible and deletable in the settings panel. This
+  is the largest privacy change in the project and should be a deliberate choice,
+  not a default.
 - It still has **zero filesystem access** — audio is cached in IndexedDB
   specifically to avoid granting it.

@@ -20,6 +20,7 @@ import {
 export type PlaybackStatus = "idle" | "loading" | "playing" | "paused" | "ended" | "error";
 export type RadioStatus = "off" | "connecting" | "playing" | "error";
 export type NewsStatus = "off" | "playing";
+export type PhoneStatus = "idle" | "connecting" | "connected" | "error";
 
 /** Every user-facing failure resolves to one of these, per the architecture doc. */
 export type NoticeKind = "video-unavailable" | "offline" | "radio-unavailable" | "content-error";
@@ -71,6 +72,7 @@ export interface AppState {
   radioVolume: number;
 
   newsStatus: NewsStatus;
+  phoneStatus: PhoneStatus;
 
   albumOpen: boolean;
   albumPageIndex: number;
@@ -97,6 +99,10 @@ export interface AppState {
 
   startNews: () => void;
   stopNews: () => void;
+
+  startCall: () => void;
+  endCall: () => void;
+  setPhoneStatus: (status: PhoneStatus) => void;
 
   openAlbum: () => void;
   closeAlbum: () => void;
@@ -145,9 +151,10 @@ export const useStore = create<AppState>((set, get) => {
       playbackStatus: "loading",
       playIntent: true,
       notice: null,
-      // Starting a video always takes audio focus from the radio and the news.
+      // Starting a video always takes audio focus from every other source.
       radioStatus: "off",
       newsStatus: "off",
+      phoneStatus: "idle",
       queuePage: pageContaining(currentItems().findIndex((item) => item.id === videoId)),
     });
     persist(get());
@@ -164,6 +171,7 @@ export const useStore = create<AppState>((set, get) => {
     radioVolume: initialPersisted.radioVolume,
 
     newsStatus: "off",
+    phoneStatus: "idle",
 
     albumOpen: false,
     albumPageIndex: 0,
@@ -250,6 +258,7 @@ export const useStore = create<AppState>((set, get) => {
           playIntent: false,
           playbackStatus: get().currentVideoId ? "paused" : "idle",
           newsStatus: "off",
+          phoneStatus: "idle",
           notice: null,
         });
       } else {
@@ -274,11 +283,29 @@ export const useStore = create<AppState>((set, get) => {
         playIntent: false,
         playbackStatus: get().currentVideoId ? "paused" : "idle",
         radioStatus: "off",
+        phoneStatus: "idle",
         notice: null,
       });
     },
 
     stopNews: () => set({ newsStatus: "off" }),
+
+    startCall: () => {
+      // Picking up the handset silences everything else, as it would if the
+      // telephone rang while the television was on.
+      set({
+        phoneStatus: "connecting",
+        playIntent: false,
+        playbackStatus: get().currentVideoId ? "paused" : "idle",
+        radioStatus: "off",
+        newsStatus: "off",
+        notice: null,
+      });
+    },
+
+    endCall: () => set({ phoneStatus: "idle" }),
+
+    setPhoneStatus: (status) => set({ phoneStatus: status }),
 
     openAlbum: () => {
       // Every audio source pauses while the album is open.
@@ -288,6 +315,7 @@ export const useStore = create<AppState>((set, get) => {
         playbackStatus: get().currentVideoId ? "paused" : "idle",
         radioStatus: "off",
         newsStatus: "off",
+        phoneStatus: "idle",
       });
     },
 
@@ -327,6 +355,7 @@ export const useStore = create<AppState>((set, get) => {
           currentVideoId: null,
           radioStatus: "off",
           newsStatus: "off",
+          phoneStatus: "idle",
         });
       }
     },

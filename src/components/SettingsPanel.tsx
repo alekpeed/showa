@@ -16,10 +16,17 @@ import { useEffect, useState } from "react";
 import { CONTENT } from "../content/loadContent";
 import { clearClips } from "../news/newsCache";
 import type { NewsState } from "../news/useNews";
+import type { CompanionState } from "../phone/useCompanion";
 import { useSettings } from "../state/settings";
 import styles from "./SettingsPanel.module.css";
 
-export function SettingsPanel({ news }: { news: NewsState }) {
+export function SettingsPanel({
+  news,
+  companion,
+}: {
+  news: NewsState;
+  companion: CompanionState;
+}) {
   const panelOpen = useSettings((s) => s.panelOpen);
   const unlocked = useSettings((s) => s.unlocked);
   const openPanel = useSettings((s) => s.openPanel);
@@ -29,6 +36,7 @@ export function SettingsPanel({ news }: { news: NewsState }) {
 
   const apiKey = useSettings((s) => s.openAiApiKey);
   const newsEnabled = useSettings((s) => s.newsEnabled);
+  const companionEnabled = useSettings((s) => s.companionEnabled);
   const radioOverride = useSettings((s) => s.radioStreamUrlOverride);
 
   const [pin, setPin] = useState("");
@@ -198,6 +206,58 @@ export function SettingsPanel({ news }: { news: NewsState }) {
               )}
             </details>
           )}
+        </section>
+
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Conversation phone</h3>
+          <p className={styles.note}>
+            Uses the same API key. Needs microphone permission — <strong>accept that prompt
+            yourself during setup</strong>, the first time you pick up the handset. A macOS
+            permission dialog is exactly the thing that will stop her.
+          </p>
+
+          <label className={styles.checkbox}>
+            <input
+              type="checkbox"
+              checked={companionEnabled}
+              onChange={(event) => update({ companionEnabled: event.target.checked })}
+            />
+            <span>Show the phone on the table</span>
+          </label>
+
+          <p className={styles.hint}>
+            Status: {companion.status}
+            {companion.lastError ? "" : " — no errors"}
+          </p>
+          {companion.lastError && <p className={styles.error}>Last error: {companion.lastError}</p>}
+
+          {/* Her private conversations, in summary. Whoever maintains this should
+              be able to see exactly what is being kept, and delete it. */}
+          <details className={styles.details}>
+            <summary>What it remembers ({companion.memory.length} notes)</summary>
+            {companion.memory.length === 0 ? (
+              <p className={styles.hint}>Nothing yet.</p>
+            ) : (
+              <div className={styles.script}>
+                {companion.memory.map((note, index) => (
+                  <div key={`${note.date}-${index}`}>
+                    {note.date}
+                    {"\n"}
+                    {note.text}
+                    {"\n"}
+                  </div>
+                ))}
+              </div>
+            )}
+            <button
+              type="button"
+              className={styles.secondary}
+              onClick={companion.forgetEverything}
+              style={{ marginTop: 10 }}
+            >
+              Forget everything
+            </button>
+          </details>
         </section>
 
         <section className={styles.section}>

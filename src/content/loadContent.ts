@@ -13,10 +13,12 @@ import rawPersonalVideos from "./personal-videos.json";
 import rawPhotoAlbum from "./photo-album.json";
 import rawRadio from "./radio.json";
 import rawNews from "./news.json";
+import rawCompanion from "./companion.json";
 
 import {
   appConfigSchema,
   photoAlbumSchema,
+  companionConfigSchema,
   newsConfigSchema,
   radioConfigSchema,
   videoLibrarySchema,
@@ -26,6 +28,7 @@ import {
   type AlbumPage,
   type AppConfig,
   type LibraryId,
+  type CompanionConfig,
   type NewsConfig,
   type RadioConfig,
   type VideoItem,
@@ -37,6 +40,7 @@ export interface LoadedContent {
   albumPages: AlbumPage[];
   radio: RadioConfig;
   news: NewsConfig;
+  companion: CompanionConfig;
   /** Fatal problems. Non-empty means the app shows a configuration-error state. */
   errors: string[];
   /** Non-fatal: unfilled REPLACE_WITH_* placeholders, surfaced in dev only. */
@@ -68,6 +72,11 @@ export function loadContent(): LoadedContent {
 
   const newsResult = newsConfigSchema.safeParse(rawNews);
   if (!newsResult.success) errors.push(...formatIssues("news.json", newsResult.error));
+
+  const companionResult = companionConfigSchema.safeParse(rawCompanion);
+  if (!companionResult.success) {
+    errors.push(...formatIssues("companion.json", companionResult.error));
+  }
 
   const libraries = {} as Record<LibraryId, VideoItem[]>;
   const seenIds = new Set<string>();
@@ -137,6 +146,18 @@ export function loadContent(): LoadedContent {
           feedUrl: "",
           feedNameJa: "NHKニュース",
           textModel: "gpt-4o-mini",
+        },
+    companion: companionResult.success
+      ? companionResult.data
+      : {
+          enabled: false,
+          model: "gpt-realtime-2.1",
+          voice: "marin",
+          eagerness: "low" as const,
+          memoryEnabled: false,
+          memoryModel: "gpt-5.6",
+          maxMemoryNotes: 40,
+          labelJa: "おしゃべり",
         },
     errors,
     placeholders,

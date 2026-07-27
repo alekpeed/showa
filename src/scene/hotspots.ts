@@ -24,6 +24,7 @@ export type HotspotAction =
   | "queue-page-previous"
   | "queue-page-next"
   | "play-news"
+  | "toggle-call"
   | "home";
 
 export interface Hotspot extends DesignRect {
@@ -143,6 +144,20 @@ export const HOTSPOTS: Hotspot[] = [
     height: 178,
     ariaLabelJa: "今日のニュース",
     ariaLabelEn: "Today's news",
+  },
+  {
+    // PLACEHOLDER POSITION. There is no telephone in the approved artwork, so
+    // this sits on the bare table between the album and the magazines. When a
+    // scene render with an actual handset arrives, these four numbers are the
+    // only thing that needs to change.
+    id: "telephone",
+    action: "toggle-call",
+    x: 862,
+    y: 872,
+    width: 214,
+    height: 118,
+    ariaLabelJa: "おしゃべり",
+    ariaLabelEn: "Talk",
   },
   {
     id: "queue-page-previous",

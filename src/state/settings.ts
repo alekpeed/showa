@@ -19,6 +19,7 @@ export interface DeviceSettings {
   /** OpenAI key for the daily news reading. Empty means the feature is off. */
   openAiApiKey: string;
   newsEnabled: boolean;
+  companionEnabled: boolean;
   /** Overrides radio.json when set, so a dead stream is a one-minute fix. */
   radioStreamUrlOverride: string;
 }
@@ -27,6 +28,7 @@ const DEFAULTS: DeviceSettings = {
   schemaVersion: 1,
   openAiApiKey: "",
   newsEnabled: true,
+  companionEnabled: true,
   radioStreamUrlOverride: "",
 };
 
@@ -40,6 +42,8 @@ function read(): DeviceSettings {
       schemaVersion: 1,
       openAiApiKey: typeof parsed.openAiApiKey === "string" ? parsed.openAiApiKey : "",
       newsEnabled: typeof parsed.newsEnabled === "boolean" ? parsed.newsEnabled : true,
+      companionEnabled:
+        typeof parsed.companionEnabled === "boolean" ? parsed.companionEnabled : true,
       radioStreamUrlOverride:
         typeof parsed.radioStreamUrlOverride === "string" ? parsed.radioStreamUrlOverride : "",
     };
@@ -83,8 +87,9 @@ export const useSettings = create<SettingsState>((set, get) => ({
 
   update: (patch) => {
     set(patch);
-    const { schemaVersion, openAiApiKey, newsEnabled, radioStreamUrlOverride } = get();
-    write({ schemaVersion, openAiApiKey, newsEnabled, radioStreamUrlOverride });
+    const { schemaVersion, openAiApiKey, newsEnabled, companionEnabled, radioStreamUrlOverride } =
+      get();
+    write({ schemaVersion, openAiApiKey, newsEnabled, companionEnabled, radioStreamUrlOverride });
   },
 }));
 

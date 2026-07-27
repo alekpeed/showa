@@ -320,6 +320,79 @@ OpenAI's current pricing page, and keep a hard spend cap on the key.
 
 ---
 
+## The conversation phone
+
+The handset on the table opens a live spoken conversation in Japanese, using the
+Realtime API.
+
+The brief it is built to: **she is not short of company, she is short of
+Japanese.** So it is an interlocutor, not an assistant. It opens with a greeting
+and one question or subject, and after that follows her completely. No topics
+are baked in — it does not steer toward Japan, the Showa era, her age, or
+anything else chosen on her behalf. It is told never to say the equivalent of
+"how can I help you?".
+
+It is also kept entirely separate from the rest of the app: it does not know
+what she has been watching, and it never will unless that is deliberately wired
+back in.
+
+### Setting it up
+
+1. Same API key as the news — paste it once in the settings panel.
+2. **Pick up the handset yourself, once, and accept the macOS microphone
+   prompt.** This matters more than it sounds. A system permission dialog is
+   exactly the thing that stops a 90-year-old cold, and she will have no idea
+   what it is asking. Do it during setup and she never meets it.
+3. Have a real conversation with it in Japanese before handing it over. Listen
+   for whether it interrupts her, and whether the register sounds natural rather
+   than like a translated assistant.
+
+### Configuring it
+
+`src/content/companion.json`:
+
+```json
+{
+  "enabled": true,
+  "model": "gpt-realtime-2.1",
+  "voice": "marin",
+  "eagerness": "low",
+  "memoryEnabled": true,
+  "memoryModel": "gpt-5.6",
+  "maxMemoryNotes": 40,
+  "labelJa": "おしゃべり"
+}
+```
+
+`model` **must be a Realtime speech-to-speech model.** An ordinary chat model
+will not connect.
+
+`eagerness` controls turn detection, and it is the setting most worth
+understanding. The session uses *semantic* VAD: rather than cutting her off
+after a fixed silence, a classifier judges from the words whether she has
+actually finished. `"low"` gives her the most room to pause mid-sentence and
+think. If she reports being interrupted, this is the dial. Values: `low`,
+`medium`, `high`, `auto`.
+
+`voice` has not been listened to by anyone. Try several reading Japanese before
+settling.
+
+### What it remembers
+
+After each call, a short summary of what was discussed is written to
+`localStorage` and injected into the next call, so a thread can be picked up
+across days instead of every call being a first meeting.
+
+The whole memory is visible in the settings panel under *What it remembers*,
+with a **Forget everything** button. These are her private conversations —
+whoever maintains this should be able to read exactly what is being kept and
+delete it. The summariser is told not to record anything about her health.
+
+Set `memoryEnabled: false` for calls that start fresh every time and store
+nothing.
+
+---
+
 ## Change app behaviour
 
 `src/content/app-config.json`:
