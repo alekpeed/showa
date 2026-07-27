@@ -20,6 +20,8 @@ export interface DeviceSettings {
   openAiApiKey: string;
   newsEnabled: boolean;
   companionEnabled: boolean;
+  /** Health beacon target. Empty means nothing is ever sent. */
+  healthEndpoint: string;
   /** Overrides radio.json when set, so a dead stream is a one-minute fix. */
   radioStreamUrlOverride: string;
 }
@@ -29,6 +31,7 @@ const DEFAULTS: DeviceSettings = {
   openAiApiKey: "",
   newsEnabled: true,
   companionEnabled: true,
+  healthEndpoint: "",
   radioStreamUrlOverride: "",
 };
 
@@ -44,6 +47,7 @@ function read(): DeviceSettings {
       newsEnabled: typeof parsed.newsEnabled === "boolean" ? parsed.newsEnabled : true,
       companionEnabled:
         typeof parsed.companionEnabled === "boolean" ? parsed.companionEnabled : true,
+      healthEndpoint: typeof parsed.healthEndpoint === "string" ? parsed.healthEndpoint : "",
       radioStreamUrlOverride:
         typeof parsed.radioStreamUrlOverride === "string" ? parsed.radioStreamUrlOverride : "",
     };
@@ -87,9 +91,22 @@ export const useSettings = create<SettingsState>((set, get) => ({
 
   update: (patch) => {
     set(patch);
-    const { schemaVersion, openAiApiKey, newsEnabled, companionEnabled, radioStreamUrlOverride } =
-      get();
-    write({ schemaVersion, openAiApiKey, newsEnabled, companionEnabled, radioStreamUrlOverride });
+    const {
+      schemaVersion,
+      openAiApiKey,
+      newsEnabled,
+      companionEnabled,
+      healthEndpoint,
+      radioStreamUrlOverride,
+    } = get();
+    write({
+      schemaVersion,
+      openAiApiKey,
+      newsEnabled,
+      companionEnabled,
+      healthEndpoint,
+      radioStreamUrlOverride,
+    });
   },
 }));
 

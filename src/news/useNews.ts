@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CONTENT } from "../content/loadContent";
+import { bump } from "../health/healthBeacon";
 import { useSettings } from "../state/settings";
 import { useStore } from "../state/store";
 import { generateTodaysClip } from "./newsService";
@@ -62,6 +63,7 @@ export function useNews(): NewsState {
       const fresh = await generateTodaysClip(key, config);
       setClip(fresh);
     } catch (error) {
+      bump("newsFailures");
       setLastError(error instanceof Error ? error.message : String(error));
     } finally {
       setGenerating(false);
@@ -88,6 +90,7 @@ export function useNews(): NewsState {
         const fresh = await generateTodaysClip(settings.openAiApiKey.trim(), config);
         setClip(fresh);
       } catch (error) {
+        bump("newsFailures");
         setLastError(error instanceof Error ? error.message : String(error));
       } finally {
         setGenerating(false);

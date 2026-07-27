@@ -17,6 +17,7 @@ import { CONTENT } from "../content/loadContent";
 import { clearClips } from "../news/newsCache";
 import type { NewsState } from "../news/useNews";
 import type { CompanionState } from "../phone/useCompanion";
+import { readCounters, readLastSentAt } from "../health/healthBeacon";
 import { useSettings } from "../state/settings";
 import styles from "./SettingsPanel.module.css";
 
@@ -38,11 +39,13 @@ export function SettingsPanel({
   const newsEnabled = useSettings((s) => s.newsEnabled);
   const companionEnabled = useSettings((s) => s.companionEnabled);
   const radioOverride = useSettings((s) => s.radioStreamUrlOverride);
+  const healthEndpoint = useSettings((s) => s.healthEndpoint);
 
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState(false);
   const [keyDraft, setKeyDraft] = useState("");
   const [radioDraft, setRadioDraft] = useState("");
+  const [healthDraft, setHealthDraft] = useState("");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -63,8 +66,9 @@ export function SettingsPanel({
       setSaved(false);
       setKeyDraft(apiKey);
       setRadioDraft(radioOverride);
+      setHealthDraft(healthEndpoint);
     }
-  }, [panelOpen, apiKey, radioOverride]);
+  }, [panelOpen, apiKey, radioOverride, healthEndpoint]);
 
   if (!panelOpen) return null;
 
@@ -111,11 +115,19 @@ export function SettingsPanel({
   }
 
   const save = () => {
-    update({ openAiApiKey: keyDraft.trim(), radioStreamUrlOverride: radioDraft.trim() });
+    update({
+      openAiApiKey: keyDraft.trim(),
+      radioStreamUrlOverride: radioDraft.trim(),
+      healthEndpoint: healthDraft.trim(),
+    });
     setSaved(true);
   };
 
   const maskedKey = apiKey ? `${apiKey.slice(0, 7)}…${apiKey.slice(-4)}` : "not set";
+  // Read at render rather than subscribed: these change constantly during use
+  // and re-rendering the panel on every counter bump would be pointless churn.
+  const counters = readCounters();
+  const lastSent = readLastSentAt();
 
   return (
     <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="Settings">
@@ -283,6 +295,42 @@ export function SettingsPanel({
               A new host also has to be allowed in the CSP in tauri.conf.json.
             </span>
           </label>
+        </section>
+
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Health monitoring</h3>
+          <p className={styles.note}>
+            Sends app version and counts of what worked and what failed, once per launch, so
+            you find out when something breaks — she never will. <strong>No titles, nothing
+            said on the phone, no durations.</strong> Leave blank to send nothing at all.
+            See <code>monitor/README.md</code> to deploy the receiver.
+          </p>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Beacon URL</span>
+            <input
+              className={styles.input}
+              type="url"
+              spellCheck={false}
+              placeholder="https://showa-health.you.workers.dev"
+              value={healthDraft}
+              onChange={(event) => {
+                setHealthDraft(event.target.value);
+                setSaved(false);
+              }}
+            />
+            <span className={styles.hint}>
+              {lastSent
+                ? `Last sent ${new Date(lastSent).toLocaleString()}`
+                : healthEndpoint
+                  ? "Configured, nothing sent yet"
+                  : "Off"}
+            </span>
+          </label>
+
+          <details className={styles.details}>
+            <summary>What would be sent right now</summary>
+            <pre className={styles.script}>{JSON.stringify(counters, null, 2)}</pre>
+          </details>
         </section>
 
         <footer className={styles.footer}>

@@ -18,6 +18,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CONTENT } from "../content/loadContent";
+import { bump } from "../health/healthBeacon";
 import { japanDate, japanDateLabel } from "../news/newsCache";
 import { useSettings } from "../state/settings";
 import { useStore } from "../state/store";
@@ -357,6 +358,7 @@ export function useCompanion(): CompanionState {
           ? `microphone permission denied — grant it in System Settings › Privacy & Security › Microphone (${message})`
           : message,
       );
+      bump("phoneFailures");
       teardown();
       setPhoneStatus("error");
     }

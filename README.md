@@ -76,6 +76,7 @@ src/
     companionPrompt.ts  an interlocutor, not an assistant
     companionMemory.ts  short notes carried between calls
   update/               silent background updates, no prompt she could see
+  health/               the beacon: version and counts, never content
   content/              JSON manifests + Zod schemas
   state/store.ts        app state and the audio-focus rules
 public/assets/          thumbnails and photographs (referenced by JSON path)
@@ -130,11 +131,21 @@ about each unfilled entry but does not fail.
 | `npm run release:manifest`     | build `latest.json` for a release from the built artifacts  |
 | `npm run check:links`          | verify every YouTube id, embed, stream and feed still works |
 
+Deploying the health monitor is covered in [`monitor/README.md`](monitor/README.md).
+
 ## Privacy
 
-No analytics, no telemetry, no external logging, no viewing history beyond an
-optional local "last played". Photographs are bundled locally and never
-uploaded.
+No analytics, no third-party tracking, no external logging service, no viewing
+history beyond an optional local "last played". Photographs are bundled locally
+and never uploaded.
+
+There **is** a health beacon, and it is off unless a URL is configured. It exists
+for one reason: she will never report a fault, so without it a break in March
+gets noticed in September. It carries app version, timestamp, and counts of what
+worked and what failed. It carries **no titles, nothing said on the phone, no
+memory notes, no durations, and nothing about what she watched.** The exact
+payload is visible in the settings panel under *What would be sent right now*.
+See `monitor/`.
 
 Network traffic, in full:
 
@@ -147,7 +158,10 @@ Network traffic, in full:
   locally and sent back at the start of the next one. Readable and deletable in
   the settings panel.
 
-Leave the API key unset and neither of those happens at all.
+- **If a health beacon URL is configured:** one small POST 30 seconds after
+  launch, to an endpoint you host.
+
+Leave the API key and the beacon URL unset and none of that happens at all.
 
 The app is granted outbound HTTP to five pinned hosts
 (`src-tauri/capabilities/default.json`) — the news feed, the OpenAI API, and the

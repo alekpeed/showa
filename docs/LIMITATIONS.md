@@ -81,16 +81,27 @@ to check on the target Mac, and they are the items most likely to need work.
 
 ## Monitoring
 
-- **There is no telemetry, deliberately.** Nothing reports back from her machine:
-  not whether an update applied, not whether the app is being used, not whether
-  anything failed. That was a privacy choice and it stands, but it means the only
-  signal about how it is actually going is asking her.
+- **She will not report a fault.** This is the assumption everything here is
+  built on, and it is worth stating plainly: someone of 90 who finds a song will
+  not play generally concludes she did something wrong, stops using that sleeve,
+  and does not mention it.
+- **The health beacon reverses the original no-telemetry stance**, narrowly and
+  on purpose. It sends version, timestamp and counts of successes and failures,
+  once per launch. It sends nothing about *what* she watched, said or looked at.
+  It is off until a URL is configured, and the exact payload is inspectable in
+  the settings panel.
+- **Tell her it exists.** "If it stops working I will see it and fix it" is a
+  reassuring thing to hear. The same mechanism undisclosed is a different thing.
+- **The beacon has never reached a deployed Worker.** The Worker's receive,
+  alert-on-failures, silence sweep and once-per-silence deduplication were all
+  exercised against an in-memory KV stand-in, but nothing has been deployed to
+  Cloudflare and no beacon has left a real machine.
+- **Silence is ambiguous.** Ten days without a beacon could be a holiday, a shut
+  laptop, a broken app, or her having quietly given up. The alert cannot tell you
+  which. It is a prompt to phone her, not a diagnosis.
 - **The weekly canary checks dependencies, not her.** It catches a deleted
-  YouTube video or a moved radio host. It cannot tell you her Mac never took the
-  update, or that she stopped opening the app in March.
-- **She will not report a fault.** This is the assumption the whole update and
-  canary apparatus is built on, and it is worth stating plainly: someone of 90
-  who finds a song will not play generally concludes she did something wrong.
+  YouTube video or a moved radio host. It cannot tell you her Mac never took an
+  update.
 
 ## Deliberately out of scope for V1
 

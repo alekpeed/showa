@@ -1,0 +1,13 @@
+name = "showa-health"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# Created with: npx wrangler kv namespace create SHOWA_HEALTH
+# Paste the returned id below before deploying.
+[[kv_namespaces]]
+binding = "SHOWA_HEALTH"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# Nightly sweep that alerts when her machine has gone quiet.
+[triggers]
+crons = ["0 8 * * *"]

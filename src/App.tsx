@@ -16,12 +16,16 @@ import { useNews } from "./news/useNews";
 import { useCompanion } from "./phone/useCompanion";
 import { useRadio } from "./radio/useRadio";
 import { SceneCanvas } from "./scene/SceneCanvas";
+import { useHealthBeacon } from "./health/useHealthBeacon";
 import { useSilentUpdater } from "./update/useSilentUpdater";
+
+const APP_VERSION = __APP_VERSION__;
 
 export default function App() {
   useKeyboardShortcuts();
   useRadio();
   useSilentUpdater();
+  useHealthBeacon(APP_VERSION);
   // Lifted to the root so the scene and the settings panel share one instance --
   // otherwise "generate now" in settings would not update the newspaper.
   const news = useNews();

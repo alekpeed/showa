@@ -7,6 +7,7 @@
  */
 import { create } from "zustand";
 
+import { bump } from "../health/healthBeacon";
 import { CONTENT } from "../content/loadContent";
 import type { LibraryId, VideoItem } from "../content/schema";
 import { QUEUE_VISIBLE_COUNT } from "../scene/hotspots";
@@ -146,6 +147,7 @@ export const useStore = create<AppState>((set, get) => {
     index < 0 ? 0 : Math.floor(index / QUEUE_VISIBLE_COUNT);
 
   const startVideo = (videoId: string) => {
+    bump("videosPlayed");
     set({
       currentVideoId: videoId,
       playbackStatus: "loading",
@@ -252,6 +254,7 @@ export const useStore = create<AppState>((set, get) => {
     toggleRadio: () => {
       const { radioStatus } = get();
       if (radioStatus === "off" || radioStatus === "error") {
+        bump("radioStarts");
         // Radio takes audio focus from the television and the news.
         set({
           radioStatus: "connecting",
@@ -268,7 +271,10 @@ export const useStore = create<AppState>((set, get) => {
 
     setRadioStatus: (status) => {
       set({ radioStatus: status });
-      if (status === "error") get().showNotice("radio-unavailable");
+      if (status === "error") {
+        bump("radioFailures");
+        get().showNotice("radio-unavailable");
+      }
     },
 
     setRadioVolume: (volume) => {
@@ -277,6 +283,7 @@ export const useStore = create<AppState>((set, get) => {
     },
 
     startNews: () => {
+      bump("newsPlays");
       // The news takes audio focus from both the television and the radio.
       set({
         newsStatus: "playing",
@@ -291,6 +298,7 @@ export const useStore = create<AppState>((set, get) => {
     stopNews: () => set({ newsStatus: "off" }),
 
     startCall: () => {
+      bump("phoneCalls");
       // Picking up the handset silences everything else, as it would if the
       // telephone rang while the television was on.
       set({
@@ -308,6 +316,7 @@ export const useStore = create<AppState>((set, get) => {
     setPhoneStatus: (status) => set({ phoneStatus: status }),
 
     openAlbum: () => {
+      bump("albumOpens");
       // Every audio source pauses while the album is open.
       set({
         albumOpen: true,
@@ -360,7 +369,13 @@ export const useStore = create<AppState>((set, get) => {
       }
     },
 
-    showNotice: (kind) => set({ notice: { kind, ...NOTICES[kind] } }),
+    showNotice: (kind) => {
+      // video-unavailable and offline both mean the television failed to play
+      // something she asked for, which is the failure she is least likely to
+      // mention and the one most worth alerting on.
+      if (kind === "video-unavailable" || kind === "offline") bump("videoFailures");
+      set({ notice: { kind, ...NOTICES[kind] } });
+    },
 
     dismissNotice: () => set({ notice: null }),
 
