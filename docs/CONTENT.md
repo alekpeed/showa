@@ -75,6 +75,18 @@ deleting it.
 
 ## Add a Bunny Stream video (her grandson's own footage)
 
+Fastest path — let the importer read the library:
+
+```bash
+BUNNY_LIBRARY_ID=123456 BUNNY_API_KEY=xxxxxxxx npm run import:bunny
+```
+
+It writes every video in the library into `personal-videos.json`, preserves
+anything you have already hand-written, and never stores the key. Then set a
+Japanese `titleJa` on each new entry.
+
+By hand instead:
+
 1. Upload to your Bunny Stream library.
 2. Copy the **library id** and the **video GUID** from the Bunny dashboard.
 3. Save a thumbnail to `public/assets/thumbnails/personal/<id>.webp`.

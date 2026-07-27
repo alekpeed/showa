@@ -110,6 +110,10 @@ extracts the ids itself.
 
 The most personal part, and the least technical.
 
+**Photographs do not go to Bunny, or anywhere else online.** They are bundled
+into the app itself, so they load instantly, work with no internet, and cannot
+be taken away by a service shutting down. Bunny is for video only.
+
 1. Export as JPEG or WebP, long edge around 2400px, lowercase hyphenated names.
 2. Drop them into `public/assets/photos/kyushu/` or `.../other-japan/`.
 3. Either name them over the existing placeholder paths — in which case nothing
@@ -165,23 +169,34 @@ in an update later.
 Otherwise:
 
 1. Sign up at <https://bunny.net> → **Stream** → Add Video Library. Pick a region
-   near her.
-2. Upload your videos through the dashboard.
-3. From the library settings, copy the **Video Library ID** (a number).
-4. For each video, copy its **GUID** from the video's page (a long
-   `xxxxxxxx-xxxx-…` string).
-5. Fill them into `src/content/personal-videos.json`:
+   near her, not near you — it decides where playback is served from.
+2. Upload through the dashboard: drag the files in. Phone footage is fine; Bunny
+   transcodes it into streamable renditions itself. Give the uploads sensible
+   filenames, since those become the initial titles.
+3. In that library, open **API** and copy the **Video Library ID** and the
+   **API Key**.
+4. Let the importer write the manifest rather than copying GUIDs by hand:
 
-```json
-"bunnyLibraryId": "123456",
-"bunnyVideoId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
-```
+   ```bash
+   BUNNY_LIBRARY_ID=123456 BUNNY_API_KEY=xxxxxxxx npm run import:bunny
+   ```
 
-`bunnyEmbedUrl` is derived from those two and can be omitted.
+   A mistyped GUID produces an entry that looks configured and silently never
+   plays, which is exactly the failure worth automating away.
+
+5. Open `src/content/personal-videos.json` and replace each `titleJa` with a
+   Japanese title she would recognise. Bunny's titles are filenames.
+
+Re-running the importer is safe — it matches on GUID and leaves anything you have
+hand-written alone, adding only videos that are new to the library.
+
+The API key is used only by that script, from your shell. It is never written to
+a file and never reaches the app: playback uses public embed URLs, and
+`bunnyEmbedUrl` is derived from the library id and GUID.
 
 In the library's **Security** settings, leave token authentication **off** — the
 app uses public embed URLs. Turning it on would require signed URLs the app
-cannot generate.
+cannot generate, and the television would stay black.
 
 > **Never put a Bunny API key in this project.** Playback needs only the embed
 > URL. The management key must stay out of the bundle.

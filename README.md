@@ -128,6 +128,7 @@ about each unfilled entry but does not fail.
 | ------------------------------ | --------------------------------------------------------- |
 | `npm run validate:content`     | schema, duplicate ids, missing asset files                 |
 | `npm run import:csv -- f.csv`  | spreadsheet → the three video manifests                    |
+| `npm run import:bunny`         | read a Bunny library → personal-videos.json                |
 | `npm run clean:background`     | regenerate the scene background from the reference art     |
 | `npm run generate:placeholders`| stand-in thumbnails for any entry that lacks a real one    |
 | `npm run fetch:thumbnails`     | pull each YouTube video's own still, cropped to 640×360     |
