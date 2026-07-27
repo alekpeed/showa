@@ -97,5 +97,18 @@
     "thumbnail": "/assets/thumbnails/showa/showa-hosokawa-bokyo-jongara.webp",
     "sortOrder": 20,
     "enabled": true
+  },
+  {
+    "id": "showa-itsuki-hit-medley-2",
+    "library": "showa-songs",
+    "source": "youtube",
+    "titleJa": "ヒットメドレー ②",
+    "titleEn": "Hit Medley 2",
+    "artistJa": "五木ひろし",
+    "artistEn": "Hiroshi Itsuki",
+    "youtubeVideoId": "C4tlPiL__rY",
+    "thumbnail": "/assets/thumbnails/showa/showa-itsuki-hit-medley-2.webp",
+    "sortOrder": 30,
+    "enabled": true
   }
 ]
