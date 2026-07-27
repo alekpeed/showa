@@ -3,10 +3,9 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  /* A plain pointer, not ns-resize: a single click sets the knob, so nothing
-     here should suggest that dragging is required. */
+  /* A plain pointer, not ns-resize: a click steps the knob and there is no drag
+     gesture, so nothing here should suggest one. */
   cursor: pointer;
-  touch-action: none;
   /* Transparent: the brass cap is painted into the background artwork. This is
      the oversized hit area sitting on top of it. */
   background: transparent;
