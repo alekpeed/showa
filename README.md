@@ -44,6 +44,9 @@ dmg/Showa Video Cabinet_0.1.0_aarch64.dmg
 ```
 
 Signing and notarization are covered in [`docs/SIGNING.md`](docs/SIGNING.md).
+Shipping an update to a Mac you cannot reach is covered in
+[`docs/UPDATES.md`](docs/UPDATES.md) — **read that before the first build you
+give her**, because the updater has to be compiled into the version she has.
 
 ---
 
@@ -72,6 +75,7 @@ src/
   phone/                the conversation phone (Realtime API over WebRTC)
     companionPrompt.ts  an interlocutor, not an assistant
     companionMemory.ts  short notes carried between calls
+  update/               silent background updates, no prompt she could see
   content/              JSON manifests + Zod schemas
   state/store.ts        app state and the audio-focus rules
 public/assets/          thumbnails and photographs (referenced by JSON path)
@@ -123,6 +127,7 @@ about each unfilled entry but does not fail.
 | `npm run clean:background`     | regenerate the scene background from the reference art     |
 | `npm run generate:placeholders`| stand-in thumbnails for any entry that lacks a real one    |
 | `npm run generate:icon`        | redraw the app icon source                                 |
+| `npm run release:manifest`     | build `latest.json` for a release from the built artifacts  |
 
 ## Privacy
 
@@ -143,8 +148,9 @@ Network traffic, in full:
 
 Leave the API key unset and neither of those happens at all.
 
-The app is granted outbound HTTP to three pinned hosts
-(`src-tauri/capabilities/default.json`) and the microphone, which is used only
+The app is granted outbound HTTP to five pinned hosts
+(`src-tauri/capabilities/default.json`) — the news feed, the OpenAI API, and the
+two GitHub hosts the silent updater fetches from — plus the microphone, used only
 while a call is open — the tracks are stopped on hang-up so the macOS recording
 indicator goes out. No filesystem, shell, camera, location or notification
 access at all.

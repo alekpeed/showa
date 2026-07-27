@@ -1,8 +1,10 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Least-privilege permissions: window and full-screen control, plus outbound HTTP to three pinned hosts for the daily news reading. No filesystem, shell, notification, camera, microphone or location access is granted.",
-  "windows": ["main"],
+  "description": "Least-privilege permissions: window and full-screen control, microphone while a call is open, outbound HTTP to pinned hosts for the news reading and the silent updater. No filesystem, shell, notification, camera or location access is granted.",
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "core:default",
     "core:window:allow-set-fullscreen",
@@ -11,11 +13,25 @@
     {
       "identifier": "http:default",
       "allow": [
-        { "url": "https://www3.nhk.or.jp/*" },
-        { "url": "https://www.nhk.or.jp/*" },
-        { "url": "https://api.openai.com/*" }
+        {
+          "url": "https://www3.nhk.or.jp/*"
+        },
+        {
+          "url": "https://www.nhk.or.jp/*"
+        },
+        {
+          "url": "https://api.openai.com/*"
+        },
+        {
+          "url": "https://github.com/*"
+        },
+        {
+          "url": "https://objects.githubusercontent.com/*"
+        }
       ],
       "deny": []
-    }
+    },
+    "updater:default",
+    "process:allow-restart"
   ]
 }

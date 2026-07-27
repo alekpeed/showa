@@ -14,7 +14,8 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "tauri": "tauri",
     "generate:placeholders": "node scripts/generate-placeholders.mjs",
-    "generate:icon": "node scripts/generate-icon.mjs"
+    "generate:icon": "node scripts/generate-icon.mjs",
+    "release:manifest": "node scripts/release-manifest.mjs"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.11.4",
@@ -32,7 +33,9 @@
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",
     "@tauri-apps/plugin-http": "^2.5.9",
+    "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-store": "^2.4.4",
+    "@tauri-apps/plugin-updater": "^2.10.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zod": "^4.4.3",

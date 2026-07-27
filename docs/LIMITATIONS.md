@@ -56,11 +56,38 @@ to check on the target Mac, and they are the items most likely to need work.
   is the original. A purpose-made clean render would look better in the cleared
   regions, which currently hold flat gradients.
 
+## The silent updater
+
+- **It only works if it is in the build she receives.** It cannot be added
+  remotely afterwards. This is the one decision in the project with a genuine
+  point of no return.
+- **The updater signing key is unrecoverable.** Lose the private key and no
+  further update will ever be accepted by her machine, by design. Back it up
+  somewhere that survives this laptop.
+- **`pubkey` is still `REPLACE_WITH_UPDATER_PUBLIC_KEY`.** Until a keypair is
+  generated and pasted in, the updater is configured but inert.
+  `npm run release:manifest` refuses to run while the placeholder is there.
+- **Never exercised.** No release has been published and no update has ever been
+  downloaded or applied. The endpoint URL assumes a *public*
+  `alekpeed/showa` repository; if it is private, GitHub's download URLs 404 for
+  her machine, silently, since the app carries no credentials.
+- **A bad release cannot be recalled.** There is no remote rollback and no
+  downgrade path — a broken build has to be followed by a *higher* version
+  containing the fix, and she has to launch twice for it to take. This is the
+  single mistake here that costs a visit.
+- **No update ever prompts her, and `relaunch()` is deliberately never called.**
+  A staged update applies on next launch. If a future change adds a restart
+  prompt, that is a regression, not a feature.
+
 ## Deliberately out of scope for V1
 
 Per `02-v1-scope.md`: no accounts, no backend, no database, no search, no
-in-app playlists, no uploading, no Google Photos sync, no auto-update, no
-offline copies, no picture-in-picture, no analytics, and one radio preset only.
+in-app playlists, no uploading, no Google Photos sync, no offline copies, no
+picture-in-picture, no analytics, and one radio preset only.
+
+Auto-update *was* on that exclusion list and is now in, deliberately: without
+physical access to her Mac, shipping without it would have made every later fix
+require a visit.
 
 Adding content means editing JSON and rebuilding. That is the intended model —
 a remote manifest would add a failure mode that could leave her staring at an
@@ -98,10 +125,12 @@ Built, but the least proven part of the app.
   no OpenAI key has ever been used. Model names, the exact Responses-API
   response shape and the Japanese output quality are all unconfirmed.
 - **`tts-1` has a hard expiry: 20 January 2027.** OpenAI deprecated the legacy
-  audio model families on 20 July 2026 with removal on that date. Since the app
-  has no auto-update, the news reading will simply stop working then, silently,
-  unless the model name is changed and a new build installed. Migration notes
-  are in docs/CONTENT.md. This is a calendar item, not a code one.
+  audio model families on 20 July 2026 with removal on that date. On that day the
+  news reading stops working, silently, until the model name is changed. With the
+  silent updater in place this is now fixable remotely rather than requiring a
+  visit — but only if the updater was in the build she received, and only if you
+  notice. Nothing tells you. Migration notes are in docs/CONTENT.md. Put it in a
+  calendar.
 - **`searchModel` must support the `web_search` tool.** Pointing it at an
   ordinary chat model silently removes the grounding: the app would still work,
   and would read her invented news. Content validation catches only obviously

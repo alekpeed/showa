@@ -16,6 +16,12 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = ["macos-private-api"] }
 tauri-plugin-http = "2"
 
+# Updater and process restart are desktop-only. Guarding them keeps the crate
+# buildable if this is ever pointed at another target.
+[target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+
 [profile.release]
 panic = "abort"
 codegen-units = 1

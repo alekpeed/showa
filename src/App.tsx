@@ -16,10 +16,12 @@ import { useNews } from "./news/useNews";
 import { useCompanion } from "./phone/useCompanion";
 import { useRadio } from "./radio/useRadio";
 import { SceneCanvas } from "./scene/SceneCanvas";
+import { useSilentUpdater } from "./update/useSilentUpdater";
 
 export default function App() {
   useKeyboardShortcuts();
   useRadio();
+  useSilentUpdater();
   // Lifted to the root so the scene and the settings panel share one instance --
   // otherwise "generate now" in settings would not update the newspaper.
   const news = useNews();
