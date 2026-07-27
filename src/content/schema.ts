@@ -97,9 +97,25 @@ export const radioConfigSchema = z.object({
 });
 export type RadioConfig = z.infer<typeof radioConfigSchema>;
 
+export const newsConfigSchema = z.object({
+  enabled: z.boolean(),
+  /** RSS/Atom feed the daily reading is built from. */
+  feedUrl: z.string().min(1),
+  feedNameJa: z.string().min(1),
+  maxHeadlines: z.number().int().min(1).max(15),
+  textModel: z.string().min(1),
+  speechModel: z.string().min(1),
+  voice: z.string().min(1),
+  /** Region the reading is asked to lead with, when the day's news covers it. */
+  regionHintJa: z.string().optional(),
+});
+export type NewsConfig = z.infer<typeof newsConfigSchema>;
+
 export const appConfigSchema = z.object({
   appNameJa: z.string().min(1),
   appNameEn: z.string().min(1),
+  /** Unlocks the hidden settings panel. A speed bump, not a security boundary. */
+  settingsPin: z.string().min(1),
   defaultLibrary: z.enum(LIBRARY_IDS),
   autoplayNext: z.boolean(),
   pauseRadioWhenVideoStarts: z.boolean(),

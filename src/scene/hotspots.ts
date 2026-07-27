@@ -23,6 +23,7 @@ export type HotspotAction =
   | "video-toggle"
   | "queue-page-previous"
   | "queue-page-next"
+  | "play-news"
   | "home";
 
 export interface Hotspot extends DesignRect {
@@ -130,6 +131,18 @@ export const HOTSPOTS: Hotspot[] = [
     height: 82,
     ariaLabelJa: "音量",
     ariaLabelEn: "Video volume",
+  },
+  {
+    // The stack of magazines on the table. It already reads as "something to
+    // read", so it carries the daily news without adding an object to the scene.
+    id: "newspaper",
+    action: "play-news",
+    x: 1210,
+    y: 812,
+    width: 370,
+    height: 178,
+    ariaLabelJa: "今日のニュース",
+    ariaLabelEn: "Today's news",
   },
   {
     id: "queue-page-previous",

@@ -1,0 +1,225 @@
+/**
+ * The hidden settings panel.
+ *
+ * Opened with Ctrl+Shift+Option+S, then a PIN. She will never find it by
+ * accident and cannot reach it by clicking anything in the scene.
+ *
+ * What lives here is specifically the set of values that would otherwise cost a
+ * rebuild, a notarization round trip and a reinstall on someone else's Mac to
+ * change: the API key and the radio stream URL. Everything else stays in JSON.
+ *
+ * This panel is the only English-first surface in the app, because the only
+ * person who will ever see it is the one maintaining it.
+ */
+import { useEffect, useState } from "react";
+
+import { CONTENT } from "../content/loadContent";
+import { clearClips } from "../news/newsCache";
+import type { NewsState } from "../news/useNews";
+import { useSettings } from "../state/settings";
+import styles from "./SettingsPanel.module.css";
+
+export function SettingsPanel({ news }: { news: NewsState }) {
+  const panelOpen = useSettings((s) => s.panelOpen);
+  const unlocked = useSettings((s) => s.unlocked);
+  const openPanel = useSettings((s) => s.openPanel);
+  const closePanel = useSettings((s) => s.closePanel);
+  const unlock = useSettings((s) => s.unlock);
+  const update = useSettings((s) => s.update);
+
+  const apiKey = useSettings((s) => s.openAiApiKey);
+  const newsEnabled = useSettings((s) => s.newsEnabled);
+  const radioOverride = useSettings((s) => s.radioStreamUrlOverride);
+
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState(false);
+  const [keyDraft, setKeyDraft] = useState("");
+  const [radioDraft, setRadioDraft] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.shiftKey && event.altKey && event.code === "KeyS") {
+        event.preventDefault();
+        openPanel();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [openPanel]);
+
+  useEffect(() => {
+    if (panelOpen) {
+      setPin("");
+      setPinError(false);
+      setSaved(false);
+      setKeyDraft(apiKey);
+      setRadioDraft(radioOverride);
+    }
+  }, [panelOpen, apiKey, radioOverride]);
+
+  if (!panelOpen) return null;
+
+  if (!unlocked) {
+    return (
+      <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="Settings">
+        <form
+          className={styles.pinBox}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!unlock(pin, CONTENT.appConfig.settingsPin)) {
+              setPinError(true);
+              setPin("");
+            }
+          }}
+        >
+          <label className={styles.pinLabel} htmlFor="settings-pin">
+            Enter code
+          </label>
+          <input
+            id="settings-pin"
+            className={styles.pinInput}
+            type="password"
+            inputMode="numeric"
+            autoFocus
+            value={pin}
+            onChange={(event) => {
+              setPin(event.target.value);
+              setPinError(false);
+            }}
+          />
+          {pinError && <p className={styles.pinError}>Incorrect</p>}
+          <div className={styles.pinActions}>
+            <button type="submit" className={styles.primary}>
+              Unlock
+            </button>
+            <button type="button" className={styles.secondary} onClick={closePanel}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  const save = () => {
+    update({ openAiApiKey: keyDraft.trim(), radioStreamUrlOverride: radioDraft.trim() });
+    setSaved(true);
+  };
+
+  const maskedKey = apiKey ? `${apiKey.slice(0, 7)}…${apiKey.slice(-4)}` : "not set";
+
+  return (
+    <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="Settings">
+      <div className={styles.panel}>
+        <header className={styles.header}>
+          <h2 className={styles.heading}>Settings</h2>
+          <button type="button" className={styles.close} onClick={closePanel} aria-label="Close">
+            ✕
+          </button>
+        </header>
+
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Daily news reading</h3>
+          <p className={styles.note}>
+            Stored on this Mac only, never in the app bundle or the repository. Changing it here
+            takes effect immediately — no rebuild.
+          </p>
+
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>OpenAI API key</span>
+            <input
+              className={styles.input}
+              type="password"
+              spellCheck={false}
+              autoComplete="off"
+              placeholder="sk-…"
+              value={keyDraft}
+              onChange={(event) => {
+                setKeyDraft(event.target.value);
+                setSaved(false);
+              }}
+            />
+            <span className={styles.hint}>Currently: {maskedKey}</span>
+          </label>
+
+          <label className={styles.checkbox}>
+            <input
+              type="checkbox"
+              checked={newsEnabled}
+              onChange={(event) => update({ newsEnabled: event.target.checked })}
+            />
+            <span>Show the news on the table</span>
+          </label>
+
+          <div className={styles.statusRow}>
+            <button
+              type="button"
+              className={styles.primary}
+              disabled={news.generating || !keyDraft.trim()}
+              onClick={() => {
+                update({ openAiApiKey: keyDraft.trim() });
+                void news.generateNow();
+              }}
+            >
+              {news.generating ? "Generating…" : "Generate today's reading now"}
+            </button>
+            <button
+              type="button"
+              className={styles.secondary}
+              onClick={() => void clearClips().then(news.refresh)}
+            >
+              Clear cache
+            </button>
+          </div>
+
+          {news.lastError && <p className={styles.error}>Last error: {news.lastError}</p>}
+
+          {news.clip && (
+            <details className={styles.details}>
+              <summary>
+                Latest clip: {news.clip.date} ({news.clip.headlines.length} headlines)
+              </summary>
+              <p className={styles.script}>{news.clip.script}</p>
+            </details>
+          )}
+        </section>
+
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Radio stream override</h3>
+          <p className={styles.note}>
+            Overrides <code>radio.json</code> when set. Use this if the J1 GOLD stream URL changes —
+            it saves a full rebuild and notarization. Must be https.
+          </p>
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>Stream URL</span>
+            <input
+              className={styles.input}
+              type="url"
+              spellCheck={false}
+              placeholder={CONTENT.radio.streamUrl}
+              value={radioDraft}
+              onChange={(event) => {
+                setRadioDraft(event.target.value);
+                setSaved(false);
+              }}
+            />
+            <span className={styles.hint}>
+              A new host also has to be allowed in the CSP in tauri.conf.json.
+            </span>
+          </label>
+        </section>
+
+        <footer className={styles.footer}>
+          {saved && <span className={styles.saved}>Saved</span>}
+          <button type="button" className={styles.primary} onClick={save}>
+            Save
+          </button>
+          <button type="button" className={styles.secondary} onClick={closePanel}>
+            Done
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}

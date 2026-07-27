@@ -6,6 +6,10 @@
 
 pub fn run() {
     tauri::Builder::default()
+        // Outbound HTTP for the daily news reading. Rust-side, so it is not
+        // subject to the WebView's CORS rules; the hosts it may reach are
+        // pinned in capabilities/default.json.
+        .plugin(tauri_plugin_http::init())
         .run(tauri::generate_context!())
         .expect("error while running Showa Video Cabinet");
 }

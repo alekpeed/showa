@@ -88,11 +88,40 @@ empty cabinet.
 - **Progress polling for YouTube runs on a 500ms interval** rather than an event
   stream, because the IFrame API exposes no time-update event.
 
-## Deferred idea: a daily Japanese news reading
+## The daily news reading
 
-Discussed, not built. Fetch a Japanese news feed, have a model summarise it into
-spoken Japanese, and play it through a TTS voice — presented as the stack of
-magazines already sitting on the table in the artwork, or as a second tuner
-preset. Notes on feasibility and the API-key question are in the conversation;
-it is a V2 feature and would be the first thing that gives this app a reason to
-talk to a server.
+Built, but the least proven part of the app.
+
+- **Never run end to end against the real APIs.** The RSS parser is verified
+  against a live NHK feed, and the settings flow is verified in a browser, but
+  no OpenAI key has ever been used. Model names (`gpt-4o-mini`, `tts-1`), the
+  request shapes and the Japanese output quality are all unconfirmed.
+- **Not testable in `npm run dev`.** The feed request goes through Tauri's Rust
+  HTTP layer to sidestep CORS, which does not exist in a plain browser. Use
+  `npm run tauri dev`.
+- **The voice is a guess.** `shimmer` reading Japanese at 0.95 speed has not
+  been heard by anyone. It may well need changing, and it is worth listening to
+  a full clip before she does.
+- **`cat0.xml` is NHK general news**, which routinely includes fires, accidents
+  and deaths. Whether that is the right thing to read aloud to a 90-year-old
+  living alone is a judgement call, not a technical one. A narrower category
+  feed is a one-line change in `news.json`.
+- **The generated script is shown in the settings panel** specifically so its
+  accuracy can be checked against the headlines before she hears it. Worth doing
+  a few times early on.
+- **No retry.** If startup generation fails, it is not attempted again until the
+  next launch. She still gets the most recent cached clip, correctly dated.
+- **The PIN is a speed bump, not security.** Anyone with the Mac can read the
+  key straight out of `localStorage`. The real control is the spend cap on the
+  key, which is why the docs insist on it.
+
+## What the news feature changed about the app's posture
+
+Worth being explicit, because V1 deliberately had none of this:
+
+- The app now makes **network requests at startup** rather than only when she
+  chooses to play something.
+- It now has **outbound HTTP permission**, scoped to three pinned hosts in
+  `src-tauri/capabilities/default.json`.
+- It still has **zero filesystem access** — audio is cached in IndexedDB
+  specifically to avoid granting it.

@@ -66,6 +66,9 @@ src/
     YouTubeAdapter.ts       YouTube IFrame Player API
     BunnyAdapter.ts         Bunny Stream embed over postMessage
   radio/useRadio.ts     J1 GOLD via a single HTMLAudioElement
+  news/                 the daily Japanese news reading
+    newsService.ts      headlines -> spoken Japanese -> audio
+    newsCache.ts        IndexedDB, so the app needs no filesystem access
   content/              JSON manifests + Zod schemas
   state/store.ts        app state and the audio-focus rules
 public/assets/          thumbnails and photographs (referenced by JSON path)
@@ -78,9 +81,9 @@ scripts/                content and asset tooling
 1. **No absolute coordinate lives outside `hotspots.ts`.** If an overlay drifts
    off its painted object, that file and `scripts/clean-background.mjs` are the
    only two places to change.
-2. **Exactly one audible source at a time.** Video starting pauses the radio,
-   radio starting pauses video, opening the album pauses both. This is enforced
-   in `src/state/store.ts`, not in the components.
+2. **Exactly one audible source at a time.** Video, radio and the news reading
+   each take audio focus from the other two, and opening the album pauses all
+   three. This is enforced in `src/state/store.ts`, not in the components.
 
 ### Keyboard
 
@@ -91,6 +94,7 @@ scripts/                content and asset tooling
 | `H`     | Home                                              |
 | `Esc`   | close the album, or leave full screen             |
 | `⇧D`    | outline every hotspot (development builds only)   |
+| `⌃⇧⌥S`  | open the hidden settings panel (then a PIN)       |
 
 ---
 
@@ -100,7 +104,7 @@ All content is static JSON in `src/content/`. Nothing is fetched at startup and
 nothing is scraped at runtime.
 
 See [`docs/CONTENT.md`](docs/CONTENT.md) for how to add a video, add album pages,
-or change the radio station.
+change the radio station, or set up the daily news reading.
 
 The manifests currently ship with **placeholder entries** — realistic titles with
 `REPLACE_WITH_*` identifiers, and generated stand-in thumbnails, so the cabinet
@@ -121,8 +125,19 @@ about each unfilled entry but does not fail.
 
 No analytics, no telemetry, no external logging, no viewing history beyond an
 optional local "last played". Photographs are bundled locally and never
-uploaded. The only network traffic is the video embeds and the radio stream,
-and only after she chooses to play something.
+uploaded.
+
+Network traffic, in full:
+
+- Video embeds and the radio stream — only after she chooses to play something.
+- **If the daily news reading is configured:** one request to the NHK RSS feed
+  and two to the OpenAI API, at app startup, to build that day's clip. Nothing
+  about her is sent — the request carries public headlines and nothing else.
+  Leave the API key unset and none of this happens.
+
+The app is granted outbound HTTP to exactly three pinned hosts
+(`src-tauri/capabilities/default.json`) and has no filesystem, shell, camera,
+microphone, location or notification access at all.
 
 ## Known limitations
 

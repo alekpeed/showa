@@ -13,6 +13,7 @@ import { useEffect, useRef } from "react";
 
 import { CONTENT } from "../content/loadContent";
 import { isPlaceholder } from "../content/schema";
+import { resolveStreamUrl, useSettings } from "../state/settings";
 import { useStore } from "../state/store";
 
 const STALL_TIMEOUT_MS = 12000;
@@ -21,6 +22,8 @@ export function useRadio() {
   const radioStatus = useStore((s) => s.radioStatus);
   const radioVolume = useStore((s) => s.radioVolume);
   const setRadioStatus = useStore((s) => s.setRadioStatus);
+  // Subscribed to so that saving a new URL re-runs the effect below.
+  const radioOverride = useSettings((s) => s.radioStreamUrlOverride);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const retriedRef = useRef(false);
@@ -65,7 +68,10 @@ export function useRadio() {
 
     if (radioStatus !== "connecting") return;
 
-    const { streamUrl, enabled } = CONTENT.radio;
+    // The device override wins, so a dead stream URL is fixable in the hidden
+    // settings panel instead of costing a rebuild and a notarization round trip.
+    const enabled = CONTENT.radio.enabled;
+    const streamUrl = resolveStreamUrl(CONTENT.radio.streamUrl);
     if (!enabled || !streamUrl || isPlaceholder(streamUrl)) {
       setRadioStatus("error");
       return;
@@ -112,7 +118,7 @@ export function useRadio() {
       audio.removeEventListener("error", onFailure);
       audio.removeEventListener("stalled", onFailure);
     };
-  }, [radioStatus, radioVolume, setRadioStatus]);
+  }, [radioStatus, radioVolume, setRadioStatus, radioOverride]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = radioVolume;

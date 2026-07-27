@@ -15,6 +15,7 @@ import {
   appConfigSchema,
   isPlaceholder,
   isUnfilled,
+  newsConfigSchema,
   LIBRARY_IDS,
   photoAlbumSchema,
   radioConfigSchema,
@@ -65,6 +66,45 @@ if (!radioResult.success) {
     warnings.push("radio.json: streamUrl is still a placeholder — the radio will show its error state");
   } else if (!streamUrl.startsWith("https://")) {
     errors.push("radio.json: streamUrl must be https (macOS blocks insecure media)");
+  }
+}
+
+// --- news.json ---------------------------------------------------------------
+const newsResult = newsConfigSchema.safeParse(readJson("news.json"));
+if (!newsResult.success) {
+  for (const issue of newsResult.error.issues) {
+    errors.push(`news.json [${issue.path.join(".")}]: ${issue.message}`);
+  }
+} else if (newsResult.data.enabled) {
+  const { feedUrl } = newsResult.data;
+  if (!feedUrl.startsWith("https://")) {
+    errors.push("news.json: feedUrl must be https");
+  } else {
+    // The Tauri capability pins which hosts the app may reach at all, so a feed
+    // host that is not listed there fails silently at runtime. Catch it here.
+    const capabilities = JSON.parse(
+      fs.readFileSync(path.join(root, "src-tauri/capabilities/default.json"), "utf8"),
+    ) as { permissions: (string | { identifier: string; allow?: { url: string }[] })[] };
+
+    const allowed = capabilities.permissions
+      .filter((p): p is { identifier: string; allow?: { url: string }[] } => typeof p !== "string")
+      .flatMap((p) => p.allow ?? [])
+      .map((entry) => entry.url);
+
+    const host = new URL(feedUrl).host;
+    const permitted = allowed.some((pattern) => {
+      try {
+        return new URL(pattern.replace(/\*$/, "")).host === host;
+      } catch {
+        return false;
+      }
+    });
+    if (!permitted) {
+      errors.push(
+        `news.json: feed host "${host}" is not allowed in src-tauri/capabilities/default.json — ` +
+          `the request will fail silently in the packaged app`,
+      );
+    }
   }
 }
 

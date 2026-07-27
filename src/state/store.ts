@@ -19,6 +19,7 @@ import {
 
 export type PlaybackStatus = "idle" | "loading" | "playing" | "paused" | "ended" | "error";
 export type RadioStatus = "off" | "connecting" | "playing" | "error";
+export type NewsStatus = "off" | "playing";
 
 /** Every user-facing failure resolves to one of these, per the architecture doc. */
 export type NoticeKind = "video-unavailable" | "offline" | "radio-unavailable" | "content-error";
@@ -69,6 +70,8 @@ export interface AppState {
   radioStatus: RadioStatus;
   radioVolume: number;
 
+  newsStatus: NewsStatus;
+
   albumOpen: boolean;
   albumPageIndex: number;
 
@@ -91,6 +94,9 @@ export interface AppState {
   toggleRadio: () => void;
   setRadioStatus: (status: RadioStatus) => void;
   setRadioVolume: (volume: number) => void;
+
+  startNews: () => void;
+  stopNews: () => void;
 
   openAlbum: () => void;
   closeAlbum: () => void;
@@ -134,14 +140,14 @@ export const useStore = create<AppState>((set, get) => {
     index < 0 ? 0 : Math.floor(index / QUEUE_VISIBLE_COUNT);
 
   const startVideo = (videoId: string) => {
-    const state = get();
     set({
       currentVideoId: videoId,
       playbackStatus: "loading",
       playIntent: true,
       notice: null,
-      // Starting a video always takes audio focus from the radio.
-      radioStatus: state.radioStatus === "off" ? "off" : "off",
+      // Starting a video always takes audio focus from the radio and the news.
+      radioStatus: "off",
+      newsStatus: "off",
       queuePage: pageContaining(currentItems().findIndex((item) => item.id === videoId)),
     });
     persist(get());
@@ -156,6 +162,8 @@ export const useStore = create<AppState>((set, get) => {
 
     radioStatus: "off",
     radioVolume: initialPersisted.radioVolume,
+
+    newsStatus: "off",
 
     albumOpen: false,
     albumPageIndex: 0,
@@ -236,11 +244,12 @@ export const useStore = create<AppState>((set, get) => {
     toggleRadio: () => {
       const { radioStatus } = get();
       if (radioStatus === "off" || radioStatus === "error") {
-        // Radio takes audio focus from the television.
+        // Radio takes audio focus from the television and the news.
         set({
           radioStatus: "connecting",
           playIntent: false,
           playbackStatus: get().currentVideoId ? "paused" : "idle",
+          newsStatus: "off",
           notice: null,
         });
       } else {
@@ -258,13 +267,27 @@ export const useStore = create<AppState>((set, get) => {
       persist(get());
     },
 
+    startNews: () => {
+      // The news takes audio focus from both the television and the radio.
+      set({
+        newsStatus: "playing",
+        playIntent: false,
+        playbackStatus: get().currentVideoId ? "paused" : "idle",
+        radioStatus: "off",
+        notice: null,
+      });
+    },
+
+    stopNews: () => set({ newsStatus: "off" }),
+
     openAlbum: () => {
-      // Both media sources pause while the album is open.
+      // Every audio source pauses while the album is open.
       set({
         albumOpen: true,
         playIntent: false,
         playbackStatus: get().currentVideoId ? "paused" : "idle",
         radioStatus: "off",
+        newsStatus: "off",
       });
     },
 
@@ -303,6 +326,7 @@ export const useStore = create<AppState>((set, get) => {
           playbackStatus: "idle",
           currentVideoId: null,
           radioStatus: "off",
+          newsStatus: "off",
         });
       }
     },

@@ -1,12 +1,21 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Least-privilege permissions: window and full-screen control only. No filesystem, shell, network, notification, camera, microphone or location access is granted.",
+  "description": "Least-privilege permissions: window and full-screen control, plus outbound HTTP to three pinned hosts for the daily news reading. No filesystem, shell, notification, camera, microphone or location access is granted.",
   "windows": ["main"],
   "permissions": [
     "core:default",
     "core:window:allow-set-fullscreen",
     "core:window:allow-is-fullscreen",
-    "core:window:allow-set-title"
+    "core:window:allow-set-title",
+    {
+      "identifier": "http:default",
+      "allow": [
+        { "url": "https://www3.nhk.or.jp/*" },
+        { "url": "https://www.nhk.or.jp/*" },
+        { "url": "https://api.openai.com/*" }
+      ],
+      "deny": []
+    }
   ]
 }

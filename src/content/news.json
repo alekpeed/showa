@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "feedUrl": "https://www3.nhk.or.jp/rss/news/cat0.xml",
+  "feedNameJa": "NHKニュース",
+  "maxHeadlines": 6,
+  "textModel": "gpt-4o-mini",
+  "speechModel": "tts-1",
+  "voice": "shimmer",
+  "regionHintJa": "九州"
+}

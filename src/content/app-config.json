@@ -7,5 +7,6 @@
   "pauseVideoWhenRadioStarts": true,
   "homeStopsPlayback": false,
   "showEnglishSubtitles": true,
-  "enableFullScreenOnLaunch": false
+  "enableFullScreenOnLaunch": false,
+  "settingsPin": "1958"
 }
