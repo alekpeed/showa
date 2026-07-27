@@ -285,6 +285,30 @@ The settings panel lists the source links behind each reading next to the
 script. Read the two against each other a few times early on: if a detail in the
 reading is not in one of those pages, the prompt needs tightening.
 
+### Model names expire — check this before January 2027
+
+`speechModel` is `tts-1`. OpenAI notified developers on **20 July 2026** that the
+legacy audio, realtime and transcription model families are deprecated, with
+**removal from the API on 20 January 2027**.
+
+This app has no auto-update. On that date, unless the model name has been
+changed and a new build installed, the news reading stops working — the app
+keeps running, the magazines keep offering the last cached clip, and nothing
+tells you why. Put it in a calendar.
+
+When migrating:
+
+- The successor family is `gpt-audio-1.5` / `gpt-audio-mini`. Confirm which of
+  them the `/v1/audio/speech` endpoint actually accepts before switching, since
+  the newer audio models are primarily Chat Completions models.
+- One reported issue with the `gpt-4o-mini-tts-2025-12-15` snapshot is that it
+  truncates final sentences. This reading **ends with a closing line**
+  (「以上、今日の明るい話題でした。」), so listen to the very end of a full clip
+  after any TTS change, not just the start.
+
+`searchModel` and `textModel` are `gpt-5.6`. Model names move fast; if either
+starts returning a 404, that is the first thing to check.
+
 ### Cost
 
 Web search calls are billed per call on top of tokens, so this mode costs

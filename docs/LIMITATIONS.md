@@ -95,9 +95,13 @@ Built, but the least proven part of the app.
 - **Never run end to end against the real APIs.** The RSS parser is verified
   against a live NHK feed, the request shapes are written against OpenAI's
   current published docs, and the settings flow is verified in a browser — but
-  no OpenAI key has ever been used. Model names (`gpt-5.6`, `tts-1`), the exact
-  Responses-API response shape and the Japanese output quality are all
-  unconfirmed.
+  no OpenAI key has ever been used. Model names, the exact Responses-API
+  response shape and the Japanese output quality are all unconfirmed.
+- **`tts-1` has a hard expiry: 20 January 2027.** OpenAI deprecated the legacy
+  audio model families on 20 July 2026 with removal on that date. Since the app
+  has no auto-update, the news reading will simply stop working then, silently,
+  unless the model name is changed and a new build installed. Migration notes
+  are in docs/CONTENT.md. This is a calendar item, not a code one.
 - **`searchModel` must support the `web_search` tool.** Pointing it at an
   ordinary chat model silently removes the grounding: the app would still work,
   and would read her invented news. Content validation catches only obviously

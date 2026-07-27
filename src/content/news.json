@@ -8,5 +8,5 @@
   "regionHintJa": "九州",
   "feedUrl": "https://www3.nhk.or.jp/rss/news/cat2.xml",
   "feedNameJa": "NHKニュース　文化・エンタメ",
-  "textModel": "gpt-4o-mini"
+  "textModel": "gpt-5.6"
 }
