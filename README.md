@@ -43,6 +43,9 @@ macos/Showa Video Cabinet.app
 dmg/Showa Video Cabinet_0.1.0_aarch64.dmg
 ```
 
+**Getting it shipped for the first time:** [`docs/SHIP.md`](docs/SHIP.md) — the
+minimum set of by-hand steps, in dependency order, each with a check.
+
 Signing and notarization are covered in [`docs/SIGNING.md`](docs/SIGNING.md).
 Shipping an update to a Mac you cannot reach is covered in
 [`docs/UPDATES.md`](docs/UPDATES.md) — **read that before the first build you
