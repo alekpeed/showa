@@ -127,6 +127,7 @@ about each unfilled entry but does not fail.
 | `npm run import:csv -- f.csv`  | spreadsheet → the three video manifests                    |
 | `npm run clean:background`     | regenerate the scene background from the reference art     |
 | `npm run generate:placeholders`| stand-in thumbnails for any entry that lacks a real one    |
+| `npm run fetch:thumbnails`     | pull each YouTube video's own still, cropped to 640×360     |
 | `npm run generate:icon`        | redraw the app icon source                                 |
 | `npm run release:manifest`     | build `latest.json` for a release from the built artifacts  |
 | `npm run check:links`          | verify every YouTube id, embed, stream and feed still works |

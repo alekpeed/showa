@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "model": "gpt-realtime-2.1",
   "voice": "marin",
   "eagerness": "low",

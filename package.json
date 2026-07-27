@@ -16,7 +16,8 @@
     "generate:placeholders": "node scripts/generate-placeholders.mjs",
     "generate:icon": "node scripts/generate-icon.mjs",
     "release:manifest": "node scripts/release-manifest.mjs",
-    "check:links": "node scripts/check-links.mjs"
+    "check:links": "node scripts/check-links.mjs",
+    "fetch:thumbnails": "node scripts/fetch-thumbnails.mjs"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.11.4",

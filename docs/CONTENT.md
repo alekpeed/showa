@@ -33,9 +33,7 @@ Dropping a real file at a placeholder's path replaces it. No JSON edit needed.
    `https://www.youtube.com/embed/VIDEO_ID` in a browser. If it says the video
    cannot be played on other websites, the uploader has disabled embedding and
    it **will not work in the app**. Pick a different upload.
-2. Save a thumbnail as `public/assets/thumbnails/showa/<id>.webp`
-   (640×360 or larger, 16:9). Leave the title out of the image — the app draws it.
-3. Add an entry to `src/content/showa-songs.json` (or `nostalgic-japan.json`):
+2. Add an entry to `src/content/showa-songs.json` (or `nostalgic-japan.json`):
 
 ```json
 {
@@ -53,6 +51,23 @@ Dropping a real file at a placeholder's path replaces it. No JSON edit needed.
   "enabled": true
 }
 ```
+
+3. Fetch the thumbnail:
+
+   ```bash
+   npm run fetch:thumbnails
+   ```
+
+   This pulls the video's own still for every item that still has a generated
+   placeholder, crops it to a consistent 640×360 and writes it to the right path.
+   Drop your own image at that path instead if you would rather choose the frame.
+
+4. Check it:
+
+   ```bash
+   npm run validate:content   # schema, ids, missing files
+   npm run check:links        # confirms every video actually still plays
+   ```
 
 `sortOrder` controls queue order — leave gaps of 10 so items can be inserted
 later without renumbering. Set `"enabled": false` to hide something without
@@ -321,6 +336,11 @@ OpenAI's current pricing page, and keep a hard spend cap on the key.
 ---
 
 ## The conversation phone
+
+> **Currently off.** `companion.json` has `"enabled": false`, so the handset does
+> not appear and the microphone is never requested. Flip that one field and cut a
+> release to turn it on — the entitlement and Info.plist string are already in
+> the build, so no other change is needed.
 
 The handset on the table opens a live spoken conversation in Japanese, using the
 Realtime API.
