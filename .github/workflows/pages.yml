@@ -4,7 +4,7 @@ name: Web preview
 # machine, without Node or a clone. This is a preview of the interface and the
 # content -- not the shipped app.
 #
-# Enable once: Settings > Pages > Source: GitHub Actions.
+# The workflow enables Pages itself on first run; no manual setup needed.
 #
 # What works in the browser: the whole scene, all three sleeves, video playback,
 # the photo album, the queue, the keyboard shortcuts, and the radio.
@@ -51,7 +51,12 @@ jobs:
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
 
+      # enablement turns Pages on for the repository if it is not already,
+      # rather than failing with "Get Pages site failed" and requiring someone
+      # to find the setting by hand.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:

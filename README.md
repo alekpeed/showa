@@ -32,8 +32,9 @@ npm run tauri dev    # the real desktop app
 ### Trying it without installing anything
 
 `.github/workflows/pages.yml` publishes the scene to GitHub Pages on every push,
-so it can be opened in any browser on any machine. Enable it once under
-**Settings → Pages → Source: GitHub Actions**.
+so it can be opened in any browser on any machine at
+`https://<user>.github.io/showa/`. The workflow enables Pages itself on first
+run — there is nothing to switch on by hand.
 
 The scene, all three sleeves, video playback, the photo album, the queue, the
 keyboard shortcuts and the radio all work there. The daily news reading and the
