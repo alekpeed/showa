@@ -29,6 +29,18 @@ npm run dev          # browser preview at http://localhost:1420
 npm run tauri dev    # the real desktop app
 ```
 
+### Trying it without installing anything
+
+`.github/workflows/pages.yml` publishes the scene to GitHub Pages on every push,
+so it can be opened in any browser on any machine. Enable it once under
+**Settings → Pages → Source: GitHub Actions**.
+
+The scene, all three sleeves, video playback, the photo album, the queue, the
+keyboard shortcuts and the radio all work there. The daily news reading and the
+conversation phone do not and cannot: both route HTTP through Tauri's Rust layer
+to sidestep CORS, which does not exist in a browser. They are no-ops in the
+preview rather than errors.
+
 ## Build
 
 ```bash

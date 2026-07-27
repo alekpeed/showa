@@ -1,0 +1,68 @@
+name: Web preview
+
+# Publishes the scene to GitHub Pages so it can be opened in any browser, on any
+# machine, without Node or a clone. This is a preview of the interface and the
+# content -- not the shipped app.
+#
+# Enable once: Settings > Pages > Source: GitHub Actions.
+#
+# What works in the browser: the whole scene, all three sleeves, video playback,
+# the photo album, the queue, the keyboard shortcuts, and the radio.
+#
+# What does not, and cannot: the daily news reading and the conversation phone
+# both route HTTP through Tauri's Rust layer to sidestep CORS, which does not
+# exist in a browser. The silent updater is a desktop concern too. All three are
+# no-ops here rather than errors.
+
+on:
+  push:
+    branches:
+      - claude/grandma-app-dlz0co
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a deploy midway; let the previous one finish first.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Pages serves from /<repo>/, so asset paths have to be built relative to
+      # it -- with the default root base every thumbnail and photograph 404s.
+      - name: Build
+        run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

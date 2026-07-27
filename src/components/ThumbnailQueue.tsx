@@ -5,6 +5,7 @@
  * width of the cards in the approved artwork, which leaves the titles legible
  * instead of shrinking them to fit a fifth.
  */
+import { assetUrl } from "../content/assetUrl";
 import { CONTENT } from "../content/loadContent";
 import { fontSize, length, place } from "../scene/designSystem";
 import {
@@ -69,7 +70,7 @@ export function ThumbnailQueue() {
               onClick={() => playVideo(item.id)}
             >
               <span className={styles.frame}>
-                <img className={styles.image} src={item.thumbnail} alt="" loading="lazy" />
+                <img className={styles.image} src={assetUrl(item.thumbnail)} alt="" loading="lazy" />
                 {duration && (
                   <span className={styles.duration} style={{ fontSize: fontSize(14) }}>
                     {duration}

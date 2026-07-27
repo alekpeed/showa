@@ -7,6 +7,7 @@
  */
 import { useEffect, useRef } from "react";
 
+import { assetUrl } from "../content/assetUrl";
 import { CONTENT } from "../content/loadContent";
 import type { AlbumPage } from "../content/schema";
 import { useStore } from "../state/store";
@@ -29,7 +30,7 @@ function PageSpread({ page }: { page: AlbumPage | undefined }) {
             className={styles.photo}
             style={{ transform: `rotate(${photo.rotationDegrees ?? 0}deg)` }}
           >
-            <img src={photo.src} alt={photo.captionJa ?? photo.captionEn ?? ""} />
+            <img src={assetUrl(photo.src)} alt={photo.captionJa ?? photo.captionEn ?? ""} />
             {(photo.captionJa || photo.locationJa) && (
               <figcaption className={styles.caption}>
                 {photo.captionJa}
@@ -73,7 +74,7 @@ export function PhotoAlbumOverlay() {
       const page = pages[pageIndex + offset];
       page?.photos.forEach((photo) => {
         const img = new Image();
-        img.src = photo.src;
+        img.src = assetUrl(photo.src);
       });
     }
   }, [albumOpen, pageIndex, pages]);

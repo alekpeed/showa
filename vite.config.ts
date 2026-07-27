@@ -5,7 +5,12 @@ import { readFileSync } from "node:fs";
 const { version } = JSON.parse(readFileSync("./package.json", "utf8")) as { version: string };
 
 // Tauri expects a fixed port and no obfuscated sourcemaps in dev.
+// The desktop app is served from the root; a GitHub Pages preview is served
+// from /<repo>/. BASE_PATH lets the same source produce both.
+const base = process.env.BASE_PATH ?? "/";
+
 export default defineConfig({
+  base,
   plugins: [react()],
   clearScreen: false,
   // The health beacon reports which version is actually running, which is how
