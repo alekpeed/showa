@@ -1,0 +1,107 @@
+name: Release
+
+# Tag a version and this builds, signs, notarizes and publishes it. The updater
+# manifest is generated and attached automatically, so her app picks the release
+# up on its next launch.
+#
+#   npm version patch      # bumps package.json
+#   # bump src-tauri/tauri.conf.json to match
+#   git commit -am "Release 0.1.1" && git tag v0.1.1 && git push --follow-tags
+#
+# Required repository secrets are listed in docs/UPDATES.md.
+
+on:
+  push:
+    tags:
+      - "v*"
+  # Lets you rehearse the whole pipeline without publishing anything.
+  workflow_dispatch:
+
+jobs:
+  release:
+    # macos-14 and later are Apple Silicon, matching the build target.
+    runs-on: macos-14
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate content and typecheck
+        run: npm run build
+
+      # The certificate has to live in a keychain the build can read. A
+      # throwaway keychain avoids touching the runner's default one.
+      - name: Import Developer ID certificate
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN=build.keychain
+          KEYCHAIN_PASSWORD=$(uuidgen)
+
+          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security default-keychain -s "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          # Without a generous timeout the keychain re-locks mid-build.
+          security set-keychain-settings -t 3600 -u "$KEYCHAIN"
+          security import certificate.p12 -k "$KEYCHAIN" \
+            -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          # Suppresses the interactive "allow codesign to use this key?" prompt,
+          # which would otherwise hang the runner until it times out.
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" > /dev/null
+          rm certificate.p12
+
+          security find-identity -v -p codesigning
+
+      - name: Build, sign, notarize and publish
+        uses: tauri-apps/tauri-action@v0
+        env:
+          # Updater signing. Separate from Apple signing: this proves the update
+          # came from you, Apple's proves the app is safe to run.
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          # Apple signing and notarization.
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: ${{ github.ref_name }}
+          releaseBody: ""
+          # Published immediately: her app polls the *latest* release, so a draft
+          # would never reach her.
+          releaseDraft: false
+          prerelease: false
+          args: --target aarch64-apple-darwin
+
+      - name: Verify the notarized bundle
+        run: |
+          set -euo pipefail
+          APP=$(find src-tauri/target -name "*.app" -maxdepth 5 | head -1)
+          echo "checking $APP"
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          # Expect "accepted ... source=Notarized Developer ID".
+          spctl --assess --type execute --verbose "$APP"
+          xcrun stapler validate "$APP"

@@ -1,0 +1,32 @@
+name: Canary
+
+# Checks the things that rot without anyone touching them: YouTube uploads being
+# deleted or having embedding disabled, radio stream hosts moving, feed URLs
+# changing.
+#
+# This exists because she will never report a broken video. Someone who finds a
+# song no longer plays assumes she did something wrong and quietly stops using
+# that sleeve. A failing run emails whoever owns the repository.
+#
+# It says nothing about *her* machine -- only about whether the current build's
+# dependencies still exist.
+
+on:
+  schedule:
+    # 09:00 UTC every Monday. No Mac needed, so this runs on free minutes.
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # No dependencies needed: the checker uses only built-in fetch.
+      - name: Check every external link
+        run: node scripts/check-links.mjs

@@ -61,7 +61,51 @@ export TAURI_SIGNING_PRIVATE_KEY_PASSWORD=""   # only if you set one
 
 ---
 
-## Releasing a new version
+## Releasing from GitHub Actions (the easy path)
+
+`.github/workflows/release.yml` does the whole thing on a hosted Mac runner:
+build, sign, notarize, generate `latest.json`, publish the release. You never
+need to own or rent a Mac for a release.
+
+### Repository secrets it needs
+
+| Secret | What it is |
+| --- | --- |
+| `APPLE_CERTIFICATE` | Your Developer ID `.p12`, base64 encoded |
+| `APPLE_CERTIFICATE_PASSWORD` | The password you set when exporting the `.p12` |
+| `APPLE_SIGNING_IDENTITY` | `Developer ID Application: Your Name (TEAMID)` |
+| `APPLE_ID` | Your Apple ID email |
+| `APPLE_PASSWORD` | App-specific password (see SIGNING.md) |
+| `APPLE_TEAM_ID` | Your 10-character Team ID |
+| `TAURI_SIGNING_PRIVATE_KEY` | Contents of `~/.tauri/showa-updater.key` |
+| `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | Only if you set one; otherwise empty |
+
+Export the certificate from Keychain Access (right-click the *private key* under
+the certificate, Export, `.p12`), then:
+
+```bash
+base64 -i certificate.p12 | pbcopy
+```
+
+### Cutting a release
+
+```bash
+npm version patch --no-git-tag-version     # bumps package.json
+# bump "version" in src-tauri/tauri.conf.json to match
+git commit -am "Release 0.1.1"
+git tag v0.1.1
+git push --follow-tags
+```
+
+The workflow takes it from there. Watch the run; the final step verifies
+`codesign`, `spctl` and `stapler` on the built bundle, so a signing problem
+fails loudly rather than shipping.
+
+Use **Run workflow** on the Actions tab to rehearse the pipeline without tagging.
+
+---
+
+## Releasing by hand
 
 1. **Bump the version in both places** — `package.json` and
    `src-tauri/tauri.conf.json`. They must match, and it must be higher than what
@@ -94,6 +138,28 @@ export TAURI_SIGNING_PRIVATE_KEY_PASSWORD=""   # only if you set one
 5. **Verify from a machine that is not yours.** Install the *previous* version on
    a fresh macOS user account, launch it, wait a minute, quit, and launch again.
    It should now be the new version.
+
+---
+
+## Checking that nothing has rotted
+
+`.github/workflows/canary.yml` runs `npm run check:links` every Monday and emails
+you if anything has broken. It checks:
+
+- every enabled YouTube id, via oEmbed — the same thing a player does, so it
+  catches deletions, region locks and embedding being disabled *after* release
+- every Bunny embed URL
+- the radio stream host
+- the news feed URL, in `feed` mode
+
+Run it yourself any time with `npm run check:links`.
+
+**It tells you nothing about her Mac.** It checks whether the current build's
+dependencies still exist — not whether her machine took the update, not whether
+she is using the app, not whether the API key still has credit. There is no
+telemetry and deliberately so.
+
+The only way to know how it is going for her is to ask her.
 
 ---
 
@@ -136,6 +202,13 @@ updates stop — silently. Nothing breaks for her, but you lose the channel.
 
 ## What this does *not* cover
 
-Signing and notarization still happen on your Mac for every release
-(`docs/SIGNING.md`). The updater removes the need to physically reach her
-machine; it does not remove Apple from the loop.
+Every release still gets signed and notarized (`docs/SIGNING.md`) — the GitHub
+Actions workflow does that on a hosted Mac runner, so you do not need one
+yourself, but Apple stays in the loop either way.
+
+What no amount of automation covers: **the microphone.** A hosted or rented Mac
+has no audio input, so the conversation phone cannot be functionally tested
+anywhere except real hardware. Given the mic entitlement fails by notarizing
+cleanly and then silently not working, that test belongs on her Mac at handover
+— which is also the only moment the permission prompt can be accepted by you
+rather than by her.

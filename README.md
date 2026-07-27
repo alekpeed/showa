@@ -128,6 +128,7 @@ about each unfilled entry but does not fail.
 | `npm run generate:placeholders`| stand-in thumbnails for any entry that lacks a real one    |
 | `npm run generate:icon`        | redraw the app icon source                                 |
 | `npm run release:manifest`     | build `latest.json` for a release from the built artifacts  |
+| `npm run check:links`          | verify every YouTube id, embed, stream and feed still works |
 
 ## Privacy
 

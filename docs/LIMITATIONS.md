@@ -79,6 +79,19 @@ to check on the target Mac, and they are the items most likely to need work.
   A staged update applies on next launch. If a future change adds a restart
   prompt, that is a regression, not a feature.
 
+## Monitoring
+
+- **There is no telemetry, deliberately.** Nothing reports back from her machine:
+  not whether an update applied, not whether the app is being used, not whether
+  anything failed. That was a privacy choice and it stands, but it means the only
+  signal about how it is actually going is asking her.
+- **The weekly canary checks dependencies, not her.** It catches a deleted
+  YouTube video or a moved radio host. It cannot tell you her Mac never took the
+  update, or that she stopped opening the app in March.
+- **She will not report a fault.** This is the assumption the whole update and
+  canary apparatus is built on, and it is worth stating plainly: someone of 90
+  who finds a song will not play generally concludes she did something wrong.
+
 ## Deliberately out of scope for V1
 
 Per `02-v1-scope.md`: no accounts, no backend, no database, no search, no
