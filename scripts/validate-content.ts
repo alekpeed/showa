@@ -76,10 +76,18 @@ if (!newsResult.success) {
     errors.push(`news.json [${issue.path.join(".")}]: ${issue.message}`);
   }
 } else if (newsResult.data.enabled) {
-  const { feedUrl } = newsResult.data;
-  if (!feedUrl.startsWith("https://")) {
+  const { feedUrl, mode, searchModel } = newsResult.data;
+
+  // The whole no-invented-news guarantee rests on the model actually searching.
+  // A model without the web_search tool answers from its weights, fluently and
+  // wrongly, so an obviously non-search model name is worth catching here.
+  if (mode === "web-search" && /^(tts|whisper|dall-e|text-embedding)/.test(searchModel)) {
+    errors.push(`news.json: "${searchModel}" is not a search-capable chat model`);
+  }
+
+  if (mode === "feed" && !feedUrl.startsWith("https://")) {
     errors.push("news.json: feedUrl must be https");
-  } else {
+  } else if (mode === "feed") {
     // The Tauri capability pins which hosts the app may reach at all, so a feed
     // host that is not listed there fails silently at runtime. Catch it here.
     const capabilities = JSON.parse(

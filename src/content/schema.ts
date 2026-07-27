@@ -99,15 +99,24 @@ export type RadioConfig = z.infer<typeof radioConfigSchema>;
 
 export const newsConfigSchema = z.object({
   enabled: z.boolean(),
-  /** RSS/Atom feed the daily reading is built from. */
-  feedUrl: z.string().min(1),
-  feedNameJa: z.string().min(1),
+  /**
+   * "web-search" asks a search-enabled model to find gentle news itself, which
+   * is the only way to filter for tone rather than category.
+   * "feed" reads a fixed RSS feed: cheaper, fully deterministic, and the
+   * fallback if search proves unreliable.
+   */
+  mode: z.enum(["web-search", "feed"]),
+  /** Search-enabled model. A model without the web_search tool WILL invent news. */
+  searchModel: z.string().min(1),
   maxHeadlines: z.number().int().min(1).max(15),
-  textModel: z.string().min(1),
   speechModel: z.string().min(1),
   voice: z.string().min(1),
-  /** Region the reading is asked to lead with, when the day's news covers it. */
+  /** Region the reading is asked to favour, when the day's news offers any. */
   regionHintJa: z.string().optional(),
+  /** Used by "feed" mode only. */
+  feedUrl: z.string().min(1),
+  feedNameJa: z.string().min(1),
+  textModel: z.string().min(1),
 });
 export type NewsConfig = z.infer<typeof newsConfigSchema>;
 

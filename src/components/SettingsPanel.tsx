@@ -178,9 +178,24 @@ export function SettingsPanel({ news }: { news: NewsState }) {
           {news.clip && (
             <details className={styles.details}>
               <summary>
-                Latest clip: {news.clip.date} ({news.clip.headlines.length} headlines)
+                Latest clip: {news.clip.date} — {news.clip.sources.length || news.clip.headlines.length}{" "}
+                {news.clip.sources.length ? "sources" : "headlines"}
               </summary>
               <p className={styles.script}>{news.clip.script}</p>
+
+              {/* Read these against the script. If a detail in the reading is not
+                  in one of these pages, the prompt needs tightening. */}
+              {news.clip.sources.length > 0 && (
+                <ul className={styles.sources}>
+                  {news.clip.sources.map((source) => (
+                    <li key={source.url}>
+                      <a href={source.url} target="_blank" rel="noreferrer noopener">
+                        {source.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </details>
           )}
         </section>

@@ -14,6 +14,11 @@ const DB_VERSION = 1;
 const STORE = "clips";
 const KEEP_DAYS = 5;
 
+export interface NewsSource {
+  url: string;
+  title: string;
+}
+
 export interface NewsClip {
   /** Japan-local date, YYYY-MM-DD. Doubles as the primary key. */
   date: string;
@@ -21,6 +26,8 @@ export interface NewsClip {
   /** The spoken text, kept so the panel can show what was read. */
   script: string;
   headlines: string[];
+  /** Web citations backing the reading. Empty in "feed" mode. */
+  sources: NewsSource[];
   sourceNameJa: string;
   createdAt: number;
 }

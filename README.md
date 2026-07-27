@@ -66,8 +66,8 @@ src/
     YouTubeAdapter.ts       YouTube IFrame Player API
     BunnyAdapter.ts         Bunny Stream embed over postMessage
   radio/useRadio.ts     J1 GOLD via a single HTMLAudioElement
-  news/                 the daily Japanese news reading
-    newsService.ts      headlines -> spoken Japanese -> audio
+  news/                 the daily gentle-news reading
+    newsService.ts      web search -> spoken Japanese -> audio
     newsCache.ts        IndexedDB, so the app needs no filesystem access
   content/              JSON manifests + Zod schemas
   state/store.ts        app state and the audio-focus rules
@@ -130,10 +130,10 @@ uploaded.
 Network traffic, in full:
 
 - Video embeds and the radio stream — only after she chooses to play something.
-- **If the daily news reading is configured:** one request to the NHK RSS feed
-  and two to the OpenAI API, at app startup, to build that day's clip. Nothing
-  about her is sent — the request carries public headlines and nothing else.
-  Leave the API key unset and none of this happens.
+- **If the daily news reading is configured:** two requests to the OpenAI API at
+  app startup to build that day's clip. Nothing about her is sent — the request
+  asks for public news and nothing else. Leave the API key unset and none of
+  this happens.
 
 The app is granted outbound HTTP to exactly three pinned hosts
 (`src-tauri/capabilities/default.json`) and has no filesystem, shell, camera,

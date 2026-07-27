@@ -129,12 +129,14 @@ export function loadContent(): LoadedContent {
       ? newsResult.data
       : {
           enabled: false,
-          feedUrl: "",
-          feedNameJa: "NHKニュース",
-          maxHeadlines: 6,
-          textModel: "gpt-4o-mini",
+          mode: "web-search",
+          searchModel: "gpt-5.6",
+          maxHeadlines: 5,
           speechModel: "tts-1",
           voice: "shimmer",
+          feedUrl: "",
+          feedNameJa: "NHKニュース",
+          textModel: "gpt-4o-mini",
         },
     errors,
     placeholders,

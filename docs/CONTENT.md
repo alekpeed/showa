@@ -182,22 +182,24 @@ notarization and reinstall on someone else's Mac to change.
 | OpenAI API key | Never in the repo, never in the bundle. |
 | Radio stream override | A dead stream URL becomes a one-minute fix. |
 
-The panel also shows the generated news script, so you can read what she is
-about to hear and check it against the headlines.
+The panel also shows the generated news script and the source links behind it,
+so you can read what she is about to hear and check it against what was
+actually published.
 
 ---
 
 ## The daily news reading
 
-The stack of magazines on the table plays a short spoken summary of the day's
-Japanese headlines.
+The stack of magazines on the table plays a short spoken reading of the day's
+gentle news from Japan — festivals, seasons, harvests, awards, animals, food,
+long lives. Roughly 90 seconds.
 
 ### Setting it up
 
 1. Create an OpenAI API key.
-2. **Set a hard monthly spend limit on it** in the OpenAI dashboard. At roughly
-   a cent a day this feature will never approach it, and the cap is what turns a
-   leaked key from an open-ended problem into a bounded one.
+2. **Set a hard monthly spend limit on it** in the OpenAI dashboard. This is the
+   control that matters: it turns a leaked key from an open-ended problem into a
+   bounded one. See Cost below.
 3. Open the settings panel (⌃⇧⌥S), paste the key, press **Save**.
 4. Press **Generate today's reading now** to confirm it works end to end.
 
@@ -207,7 +209,7 @@ Without a key, the magazines are simply not shown — no dead control.
 
 - Generation runs **in the background at app startup**, not on a schedule. A
   scheduled job is no use on a Mac that is off most of the time.
-- Nothing blocks. The scene is interactive immediately, and a failed feed or a
+- Nothing blocks. The scene is interactive immediately, and a failed search or a
   rate-limited API produces nothing she has to react to.
 - The magazines always play the newest clip that already exists and **state
   which day it is from**. A two-day-old reading is never presented as today's.
@@ -220,39 +222,77 @@ Without a key, the magazines are simply not shown — no dead control.
 ```json
 {
   "enabled": true,
-  "feedUrl": "https://www3.nhk.or.jp/rss/news/cat0.xml",
-  "feedNameJa": "NHKニュース",
-  "maxHeadlines": 6,
-  "textModel": "gpt-4o-mini",
+  "mode": "web-search",
+  "searchModel": "gpt-5.6",
   "speechModel": "tts-1",
   "voice": "shimmer",
-  "regionHintJa": "九州"
+  "maxHeadlines": 5,
+  "regionHintJa": "九州",
+  "feedUrl": "https://www3.nhk.or.jp/rss/news/cat2.xml",
+  "feedNameJa": "NHKニュース　文化・エンタメ",
+  "textModel": "gpt-4o-mini"
 }
 ```
 
-- `regionHintJa` asks the reading to lead with Kyushu items when the day's news
-  has any. It is a preference, not a filter.
-- Changing `feedUrl` to a different host **also** requires adding that host to
-  `src-tauri/capabilities/default.json`. `npm run validate:content` fails the
-  build if you forget — otherwise the request fails silently in the packaged app.
+There are two modes.
+
+#### `"web-search"` — the default
+
+A search-enabled model is asked to go and find the day's genuinely gentle news
+from Japan: festivals, seasonal flowers, harvests, awards, crafts, animals,
+food, children, long lives, reunions. It is told explicitly to exclude
+accidents, fires, disasters, crime, illness, death, war, political conflict and
+scandal — and to return fewer items rather than pad the list on a quiet day.
+
+This is the only way to filter by *tone*. RSS categories filter by subject, and
+"culture" still carries obituaries.
+
+`regionHintJa` asks it to favour Kyushu when the day offers something.
+
+#### `"feed"` — the fallback
+
+Reads a fixed RSS feed and rephrases the headlines. Cheaper, fully
+deterministic, and already verified working against NHK. Flip `mode` to
+`"feed"` if search proves unreliable or costly.
+
+NHK's category feeds: `cat0` main, `cat1` society, `cat2` culture and
+entertainment, `cat3` science and medicine, `cat4` politics, `cat5` economy,
+`cat6` international, `cat7` sport. `cat2` is the gentlest of them, and is what
+`feedUrl` points at.
+
+Changing `feedUrl` to a different host **also** requires adding that host to
+`src-tauri/capabilities/default.json`. `npm run validate:content` fails the
+build if you forget — otherwise the request fails silently once packaged.
 
 ### The accuracy rule
 
-The model never writes news. It receives the day's real headlines and is
-constrained to turning them into natural spoken Japanese — no added detail, no
-numbers it was not given, no invented context — and the source is named aloud.
+The model is never allowed to invent news, and in `web-search` mode this is
+enforced structurally rather than by asking nicely:
 
-This is not a stylistic choice. She has no way to catch a confabulated story and
-no reason to doubt one. If you change the prompt in
-`src/news/newsService.ts`, keep those constraints.
+> **A response that comes back with no web citations is thrown away, not spoken.**
 
-### Choosing a feed
+That matters because the failure it prevents is invisible. A model answering
+from its own training data instead of live search will produce fluent, confident,
+completely fictional Japanese news — real-sounding place names, real-sounding
+numbers. She has no way to catch it and no reason to doubt it. Prompt wording
+alone cannot guarantee a model actually searched; the presence of citations can.
 
-`cat0.xml` is NHK's general news, which on any given day includes fires,
-accidents and deaths. That may not be what you want read aloud to her alone in
-the morning. NHK publishes narrower category feeds; pick one that suits, or
-raise `maxHeadlines` and accept the mix. This is a judgement call about her, not
-a technical one.
+If you change `searchModel`, **it must be a model that supports the `web_search`
+tool.** Pointing it at an ordinary chat model removes the grounding entirely
+while still appearing to work.
+
+The settings panel lists the source links behind each reading next to the
+script. Read the two against each other a few times early on: if a detail in the
+reading is not in one of those pages, the prompt needs tightening.
+
+### Cost
+
+Web search calls are billed per call on top of tokens, so this mode costs
+meaningfully more than a plain completion — on the order of cents per day rather
+than a fraction of one. At once a day that is still a few dollars a year. Check
+OpenAI's current pricing page, and keep a hard spend cap on the key.
+
+`"feed"` mode is roughly ten times cheaper if that ever matters.
 
 ---
 

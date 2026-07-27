@@ -1,10 +1,12 @@
 {
   "enabled": true,
-  "feedUrl": "https://www3.nhk.or.jp/rss/news/cat0.xml",
-  "feedNameJa": "NHKニュース",
-  "maxHeadlines": 6,
-  "textModel": "gpt-4o-mini",
+  "mode": "web-search",
+  "searchModel": "gpt-5.6",
   "speechModel": "tts-1",
   "voice": "shimmer",
-  "regionHintJa": "九州"
+  "maxHeadlines": 5,
+  "regionHintJa": "九州",
+  "feedUrl": "https://www3.nhk.or.jp/rss/news/cat2.xml",
+  "feedNameJa": "NHKニュース　文化・エンタメ",
+  "textModel": "gpt-4o-mini"
 }

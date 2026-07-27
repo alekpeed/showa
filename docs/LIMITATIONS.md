@@ -93,24 +93,44 @@ empty cabinet.
 Built, but the least proven part of the app.
 
 - **Never run end to end against the real APIs.** The RSS parser is verified
-  against a live NHK feed, and the settings flow is verified in a browser, but
-  no OpenAI key has ever been used. Model names (`gpt-4o-mini`, `tts-1`), the
-  request shapes and the Japanese output quality are all unconfirmed.
+  against a live NHK feed, the request shapes are written against OpenAI's
+  current published docs, and the settings flow is verified in a browser — but
+  no OpenAI key has ever been used. Model names (`gpt-5.6`, `tts-1`), the exact
+  Responses-API response shape and the Japanese output quality are all
+  unconfirmed.
+- **`searchModel` must support the `web_search` tool.** Pointing it at an
+  ordinary chat model silently removes the grounding: the app would still work,
+  and would read her invented news. Content validation catches only obviously
+  wrong model names (a TTS or embedding model), not a plausible-but-non-search
+  one. This is the sharpest edge in the codebase.
+- **How often "no gentle news today" happens is unknown.** The model is told to
+  return fewer items rather than pad, and to say so plainly if it finds nothing.
+  Whether that means a short reading once a month or a useless one once a week
+  will only be clear after a few weeks of real use.
 - **Not testable in `npm run dev`.** The feed request goes through Tauri's Rust
   HTTP layer to sidestep CORS, which does not exist in a plain browser. Use
   `npm run tauri dev`.
 - **The voice is a guess.** `shimmer` reading Japanese at 0.95 speed has not
   been heard by anyone. It may well need changing, and it is worth listening to
   a full clip before she does.
-- **`cat0.xml` is NHK general news**, which routinely includes fires, accidents
-  and deaths. Whether that is the right thing to read aloud to a 90-year-old
-  living alone is a judgement call, not a technical one. A narrower category
-  feed is a one-line change in `news.json`.
+- **Tone filtering is the model's judgement, not a rule.** `web-search` mode
+  asks for gentle news and lists what to exclude, but nothing structurally
+  prevents a sad story slipping through — "heartwarming" and "bereavement" sit
+  closer together than a prompt can always separate. `feed` mode has the
+  opposite problem: NHK categories filter by subject, so even culture and
+  entertainment carries obituaries.
 - **The generated script is shown in the settings panel** specifically so its
   accuracy can be checked against the headlines before she hears it. Worth doing
   a few times early on.
 - **No retry.** If startup generation fails, it is not attempted again until the
   next launch. She still gets the most recent cached clip, correctly dated.
+- **Web search is billed per call** on top of tokens, so this costs cents per
+  day rather than a fraction of one. Still only a few dollars a year at once
+  daily, but it is roughly ten times `feed` mode. Verify against OpenAI's
+  current pricing.
+- **Citations are shown only in the settings panel**, since the reading reaches
+  her as audio. Worth checking that this satisfies OpenAI's requirement that
+  search citations be visible in the UI.
 - **The PIN is a speed bump, not security.** Anyone with the Mac can read the
   key straight out of `localStorage`. The real control is the spend cap on the
   key, which is why the docs insist on it.

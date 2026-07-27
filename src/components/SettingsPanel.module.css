@@ -221,6 +221,22 @@
   white-space: pre-wrap;
 }
 
+.sources {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.sources a {
+  color: #b9a887;
+  word-break: break-word;
+}
+
+.sources a:hover {
+  color: var(--brass-bright);
+}
+
 .footer {
   display: flex;
   align-items: center;
