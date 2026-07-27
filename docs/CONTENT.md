@@ -113,6 +113,56 @@ By hand instead:
 > **Never put a Bunny API key in this project.** Playback uses public embed URLs
 > only. The management API key must stay out of the app bundle.
 
+## Move a library off YouTube onto Bunny
+
+Worth knowing why you would: a YouTube embed is YouTube's player, not ours. It
+paints its own screen whenever the video is not running — a title bar, a large
+play button, a scrubber, a related-video thumbnail — and no player parameter
+turns that off. The app covers it, but covering it is the best that can be done.
+On Bunny the television is just the television. It also removes the two failure
+modes the weekly canary exists for: a video being deleted, and an uploader
+switching off embedding, which for forty-year-old enka uploads is not remote.
+
+The two sources coexist, so a library can be moved a few videos at a time and
+the cabinet keeps working throughout.
+
+**1. Download each video and name the file after its entry id.** The id is the
+`"id"` field in the manifest — `showa-hosokawa-bokyo-jongara`. The Japanese
+title works too (`望郷じょんがら.mp4`), but the id is unambiguous.
+
+```bash
+yt-dlp -f "bv*+ba/b" --merge-output-format mp4 \
+  -o "showa-hosokawa-bokyo-jongara.%(ext)s" \
+  "https://www.youtube.com/watch?v=..."
+```
+
+**2. Upload them to a Bunny Stream library** — drag them into the dashboard.
+Keep the filenames as they are; that is what the next step matches on.
+
+**3. Repoint the manifests.** Dry run first — it writes nothing:
+
+```bash
+BUNNY_LIBRARY_ID=123456 BUNNY_API_KEY=xxxxxxxx npm run migrate:bunny
+```
+
+It reports what it would repoint, what is still encoding, and what it could not
+find. When the list looks right:
+
+```bash
+BUNNY_LIBRARY_ID=123456 BUNNY_API_KEY=xxxxxxxx npm run migrate:bunny -- --apply
+```
+
+Only `source`, `youtubeVideoId` (removed) and the two Bunny ids change. Japanese
+titles, artists, years, sort order and thumbnails are all preserved, and an entry
+with no match in the library is left on YouTube rather than broken. Videos still
+encoding are skipped with a note — re-run once they finish.
+
+Then, as always:
+
+```bash
+npm run validate:content && npm run check:links
+```
+
 ## Import a list of links at once
 
 The lowest-friction path. Put the links in a text file, one per line:

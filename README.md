@@ -148,6 +148,7 @@ about each unfilled entry but does not fail.
 | `npm run import:urls -- f.txt` | a list of YouTube links → a library manifest                |
 | `npm run import:csv -- f.csv`  | spreadsheet → the three video manifests                    |
 | `npm run import:bunny`         | read a Bunny library → personal-videos.json                |
+| `npm run migrate:bunny`        | repoint manifest entries from YouTube to Bunny (dry by default) |
 | `npm run clean:background`     | regenerate the scene background from the reference art     |
 | `npm run generate:placeholders`| stand-in thumbnails for any entry that lacks a real one    |
 | `npm run fetch:thumbnails`     | pull each YouTube video's own still, cropped to 640×360     |
