@@ -28,6 +28,8 @@ const readJson = (name) => JSON.parse(fs.readFileSync(path.join(contentDir, name
 const isPlaceholder = (value) => typeof value === "string" && value.startsWith("REPLACE_WITH");
 
 const problems = [];
+/** Things that could not be checked, rather than things known to be broken. */
+const warnings = [];
 const skipped = [];
 let checked = 0;
 
@@ -68,16 +70,17 @@ async function checkYouTube(item) {
   }
 }
 
-async function checkUrl(label, url, { method = "HEAD" } = {}) {
+async function checkUrl(label, url, { method = "HEAD", soft = false } = {}) {
+  const report = soft ? warnings : problems;
   try {
     let response = await request(url, { method });
     // Plenty of stream and CDN hosts reject HEAD but serve GET perfectly well.
     if (response.status === 405 || response.status === 501) {
       response = await request(url, { method: "GET" });
     }
-    if (!response.ok) problems.push(`${label}: returned ${response.status}`);
+    if (!response.ok) report.push(`${label}: returned ${response.status}`);
   } catch (error) {
-    problems.push(`${label}: ${error.message}`);
+    report.push(`${label}: ${error.message}`);
   }
 }
 
@@ -113,7 +116,12 @@ for (const file of libraries) {
 const radio = readJson("radio.json");
 if (radio.enabled && !isPlaceholder(radio.streamUrl)) {
   checked++;
-  await checkUrl(`radio "${radio.name}"`, radio.streamUrl);
+  // Soft: an endless audio stream on a non-standard port is a poor fit for a
+  // one-shot request, and some networks block the port outright. A weekly false
+  // alarm here would teach you to ignore the whole canary, which is worse than
+  // missing a radio outage -- especially since the settings panel can override
+  // the stream URL without a release.
+  await checkUrl(`radio "${radio.name}"`, radio.streamUrl, { soft: true });
 } else if (radio.enabled) {
   skipped.push("radio.streamUrl (still a placeholder)");
 }
@@ -126,6 +134,7 @@ if (news.enabled && news.mode === "feed") {
 
 console.log(`\nchecked ${checked} links`);
 for (const entry of skipped) console.log(`  skip  ${entry}`);
+for (const entry of warnings) console.warn(`  warn  ${entry}  (could not verify -- check by hand)`);
 
 if (problems.length) {
   console.error(`\n${problems.length} problem(s):\n`);

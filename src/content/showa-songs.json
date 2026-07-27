@@ -8,10 +8,11 @@
     "artistJa": "北島三郎",
     "artistEn": "Saburo Kitajima",
     "year": 1980,
-    "youtubeVideoId": "REPLACE_WITH_VIDEO_ID",
+    "youtubeVideoId": "uarCXb5ayMI",
     "thumbnail": "/assets/thumbnails/showa/showa-kitajima-fusetsu.webp",
     "sortOrder": 10,
-    "enabled": true
+    "enabled": true,
+    "subtitleJa": "明治座 2014年 ライブ"
   },
   {
     "id": "showa-misora-kawa",
