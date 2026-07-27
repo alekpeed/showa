@@ -130,20 +130,23 @@ The station's own listen page redirects to a stream that is already wired in:
 "streamUrl": "https://jenny.torontocast.com:2000/stream/J1GOLD"
 ```
 
-Its host is already allowed in the CSP. **This has not been verified** — the
-build container blocks non-standard ports, so it was found rather than tested.
+**The stream is confirmed working.** Its host is allowed in `media-src` and
+`connect-src`, so nothing further is needed to ship.
 
-**Check, on your Mac:**
+One check left, and it is worth doing: play it **inside the app** rather than in
+a browser.
+
 ```bash
-curl -sS -m 10 -o /dev/null -D- -A "Mozilla/5.0" \
-  "https://jenny.torontocast.com:2000/stream/J1GOLD" | head -5
+npm run tauri dev     # not npm run dev -- the CSP only applies in the real app
 ```
-You want `200` and a `content-type` of `audio/mpeg`. Or just open the URL in
-Safari and listen.
 
-If it is wrong, you do **not** need a rebuild: put the correct URL in the hidden
-settings panel (⌃⇧⌥S) under *Radio stream override*. Only if the new host differs
-does the CSP in `tauri.conf.json` need the extra entry.
+Turn the input selector on the amplifier. A CSP-blocked origin fails *silently* —
+no error she would see, and none you would either without looking. That is the
+only remaining way this can go wrong.
+
+If the station ever moves, the hidden settings panel (⌃⇧⌥S) has a *Radio stream
+override* that fixes it without a rebuild. A different host would still need
+adding to the CSP.
 
 Sources: [J1 Radio](https://www.j1fm.tokyo/) · [J1 GOLD player](https://www.j1fm.tokyo/player/j1gold/)
 

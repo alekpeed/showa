@@ -17,11 +17,10 @@ to check on the target Mac, and they are the items most likely to need work.
 2. **Bunny Stream embeds inside the packaged WebView.** Same caveat. The adapter
    is written against Bunny's Player.js postMessage protocol but has never
    spoken to a real Bunny library.
-3. **J1 GOLD playback.** A stream URL is wired in and its host is allowed in the
-   CSP, but it has never been played. If it turns out wrong, the settings-panel
-   override handles it without a rebuild — but a *different* host would still
-   need adding to `media-src` and `connect-src`, or the WebView blocks it
-   silently.
+3. **J1 GOLD inside the packaged app.** The stream URL is confirmed live and its
+   host is allowed in the CSP. What remains is playing it *through the app* with
+   the CSP applied — a blocked origin fails silently, with no console error she
+   or you would see. Check it in `npm run tauri dev` before shipping.
 4. **Gatekeeper.** No Apple Developer ID yet, so nothing has been signed or
    notarized.
 5. **Alignment in real full screen** at the target Mac's native resolution.
@@ -34,11 +33,9 @@ to check on the target Mac, and they are the items most likely to need work.
   like an unavailable video: the Japanese "could not play" notice with a retry.
 - Thumbnails and album photographs are generated stand-ins — warm cards carrying
   their own Japanese title. Dropping a real file at the same path replaces it.
-- `radio.json` now points at `https://jenny.torontocast.com:2000/stream/J1GOLD`,
-  which the station's own listen page redirects to, and the host is allowed in
-  the CSP. **It has not been verified** — the build container blocks non-standard
-  ports, so it was found rather than tested. Confirm it on a real Mac; if it is
-  wrong, the settings-panel override fixes it without a rebuild.
+- `radio.json` points at `https://jenny.torontocast.com:2000/stream/J1GOLD`, the
+  endpoint the station's own listen page redirects to. **Confirmed live.** The
+  host is allowed in `media-src` and `connect-src`.
 
 ## Design compromises
 
