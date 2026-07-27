@@ -110,5 +110,17 @@
     "thumbnail": "/assets/thumbnails/showa/showa-itsuki-hit-medley-2.webp",
     "sortOrder": 30,
     "enabled": true
+  },
+  {
+    "id": "showa-darkducks-yukiyama",
+    "library": "showa-songs",
+    "source": "youtube",
+    "titleJa": "雪山に消えたあいつ",
+    "artistJa": "ダーク・ダックス",
+    "artistEn": "Dark Ducks",
+    "youtubeVideoId": "mmFF9q-3m_U",
+    "thumbnail": "/assets/thumbnails/showa/showa-darkducks-yukiyama.webp",
+    "sortOrder": 40,
+    "enabled": true
   }
 ]
