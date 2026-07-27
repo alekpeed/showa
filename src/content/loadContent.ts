@@ -157,6 +157,8 @@ export function loadContent(): LoadedContent {
           memoryEnabled: false,
           memoryModel: "gpt-5.6",
           maxMemoryNotes: 40,
+          silenceNudgeSeconds: 25,
+          silenceHangupSeconds: 180,
           labelJa: "おしゃべり",
         },
     errors,

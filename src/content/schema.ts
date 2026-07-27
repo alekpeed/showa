@@ -134,6 +134,18 @@ export const companionConfigSchema = z.object({
   memoryEnabled: z.boolean(),
   memoryModel: z.string().min(1),
   maxMemoryNotes: z.number().int().min(1).max(200),
+  /**
+   * Quiet seconds before the far end gently says something to invite her back.
+   * Semantic VAD waits a long time by design, and silence on a phone reads as a
+   * broken phone -- especially to someone who cannot see that it is still live.
+   */
+  silenceNudgeSeconds: z.number().int().min(5).max(300),
+  /**
+   * Quiet seconds before the call ends itself. Guards against her walking away
+   * without hanging up, which would otherwise leave the microphone open and the
+   * meter running until the app is closed.
+   */
+  silenceHangupSeconds: z.number().int().min(30).max(3600),
   labelJa: z.string().min(1),
 });
 export type CompanionConfig = z.infer<typeof companionConfigSchema>;

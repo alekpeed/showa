@@ -70,10 +70,34 @@ export function useCompanion(): CompanionState {
   /** Plain-text transcript of the call, used only to write the closing note. */
   const transcriptRef = useRef<string[]>([]);
 
+  /** Silence tracking. See startSilenceWatch below for why this exists. */
+  const lastActiveRef = useRef(0);
+  const nudgesRef = useRef(0);
+  const silenceTimerRef = useRef<number | null>(null);
+
+  /**
+   * `fromUser` matters: the far end speaking keeps the call from being torn down
+   * mid-sentence, but only *her* voice means the conversation actually revived.
+   * Letting a nudge reset the nudge counter would make it nudge forever and
+   * never hang up -- the exact failure this watch exists to prevent.
+   */
+  const markActive = useCallback((fromUser: boolean) => {
+    lastActiveRef.current = Date.now();
+    if (fromUser) nudgesRef.current = 0;
+  }, []);
+
+  const stopSilenceWatch = useCallback(() => {
+    if (silenceTimerRef.current !== null) {
+      window.clearInterval(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+  }, []);
+
   const config = CONTENT.companion;
   const available = config.enabled && companionEnabled && Boolean(apiKey.trim());
 
   const teardown = useCallback(() => {
+    stopSilenceWatch();
     channelRef.current?.close();
     channelRef.current = null;
 
@@ -90,7 +114,7 @@ export function useCompanion(): CompanionState {
       audioRef.current.pause();
       audioRef.current.srcObject = null;
     }
-  }, []);
+  }, [stopSilenceWatch]);
 
   /** Summarises the call into a couple of lines for the next one to build on. */
   const writeClosingNote = useCallback(async () => {
@@ -138,6 +162,55 @@ export function useCompanion(): CompanionState {
       // A missing note is not worth surfacing; the next call simply has less.
     }
   }, [config]);
+
+  /**
+   * Watches for a conversation going quiet.
+   *
+   * Semantic VAD waits a long time on purpose, which is right when she is
+   * thinking mid-sentence but wrong when the conversation has simply stalled.
+   * Silence on a telephone reads as a dead telephone, and she cannot see that
+   * the line is still open -- so after a while the far end says something short
+   * to invite her back, twice, and then hangs up.
+   *
+   * The hang-up is not politeness. Without it, walking away from an open call
+   * leaves the microphone live and the meter running until the app is quit.
+   */
+  const startSilenceWatch = useCallback(() => {
+    stopSilenceWatch();
+    markActive(true);
+
+    silenceTimerRef.current = window.setInterval(() => {
+      const quietMs = Date.now() - lastActiveRef.current;
+      const channel = channelRef.current;
+      if (!channel || channel.readyState !== "open") return;
+
+      if (quietMs > config.silenceHangupSeconds * 1000) {
+        stopSilenceWatch();
+        endCall();
+        return;
+      }
+
+      const nudgeAt = config.silenceNudgeSeconds * 1000 * (nudgesRef.current + 1);
+      if (nudgesRef.current < 2 && quietMs > nudgeAt) {
+        nudgesRef.current += 1;
+        try {
+          channel.send(
+            JSON.stringify({
+              type: "response.create",
+              response: {
+                instructions:
+                  "少し間があきました。ひとことだけ、やさしく声をかけてください。" +
+                  "「まだ聞いていますよ」と伝わるように、短く。" +
+                  "急かしたり、たずね直したりしないこと。返事がなくてもかまいません。",
+              },
+            }),
+          );
+        } catch {
+          // The channel can close between the check and the send.
+        }
+      }
+    }, 2000);
+  }, [config.silenceHangupSeconds, config.silenceNudgeSeconds, endCall, markActive, stopSilenceWatch]);
 
   const connect = useCallback(async () => {
     const key = useSettings.getState().openAiApiKey.trim();
@@ -211,12 +284,25 @@ export function useCompanion(): CompanionState {
 
       const channel = pc.createDataChannel("oai-events");
       channelRef.current = channel;
+      channel.onopen = () => startSilenceWatch();
       channel.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data as string) as {
             type?: string;
             transcript?: string;
           };
+
+          // Any speech from either side means the call is alive.
+          if (
+            message.type === "input_audio_buffer.speech_started" ||
+            message.type === "input_audio_buffer.speech_stopped"
+          ) {
+            markActive(true);
+          }
+          if (message.type === "response.done") {
+            markActive(false);
+          }
+
           // Both sides' transcripts are collected purely to write the closing
           // note. Nothing is stored until that summary is made.
           if (
@@ -224,9 +310,11 @@ export function useCompanion(): CompanionState {
             message.transcript
           ) {
             transcriptRef.current.push(`本人: ${message.transcript}`);
+            markActive(true);
           }
           if (message.type === "response.output_audio_transcript.done" && message.transcript) {
             transcriptRef.current.push(`相手: ${message.transcript}`);
+            markActive(false);
           }
         } catch {
           // Not every event is JSON we care about.

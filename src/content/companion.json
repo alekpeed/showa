@@ -6,5 +6,7 @@
   "memoryEnabled": true,
   "memoryModel": "gpt-5.6",
   "maxMemoryNotes": 40,
-  "labelJa": "おしゃべり"
+  "labelJa": "おしゃべり",
+  "silenceNudgeSeconds": 25,
+  "silenceHangupSeconds": 180
 }

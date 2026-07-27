@@ -377,6 +377,31 @@ think. If she reports being interrupted, this is the dial. Values: `low`,
 `voice` has not been listened to by anyone. Try several reading Japanese before
 settling.
 
+### If the conversation goes quiet
+
+Semantic VAD waits a long time on purpose, which is right when she is thinking
+mid-sentence and wrong when the conversation has simply stalled. Silence on a
+telephone reads as a *broken* telephone, and she cannot see that the line is
+still open.
+
+So the call watches for quiet:
+
+| After | What happens |
+| --- | --- |
+| `silenceNudgeSeconds` (25s) | The far end says one short thing to invite her back. |
+| Roughly twice that again | It does so once more. |
+| `silenceHangupSeconds` (180s) of continued quiet | The call ends itself. |
+
+Only *her* voice resets the count. The nudge itself does not, or it would nudge
+forever and never hang up.
+
+The auto hang-up is not politeness. Without it, walking away from an open call
+leaves the microphone live and the meter running until the app is quit.
+
+If she has trouble getting back in, the handset is always the answer: it returns
+to its resting label and one click starts a fresh call. Previous conversations
+are carried over in the notes, so restarting does not lose the thread.
+
 ### What it remembers
 
 After each call, a short summary of what was discussed is written to
